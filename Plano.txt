@@ -1,0 +1,122 @@
+1 personagem (8 direções)
+1 sala
+alguns tipos de inimigo
+1 boss
+alguns upgrades
+1 arma principal
+1 ou 2 ataques especiais
+1 sistema de ondas
+1 final
+
+                   SEU CÓDIGO
+                       │
+        ┌──────────────┴──────────────┐
+        │                             │
+ Rasterizador                    Game Logic
+        │
+        ├── SetPixel()
+        ├── Line()
+        ├── Circle()
+        ├── Ellipse()
+        ├── FloodFill()
+        ├── Scanline()
+        ├── Texture Mapping
+        ├── Gradient
+        ├── Transformations
+        ├── Cohen-Sutherland
+        └── Viewport
+                       │
+                       ▼
+                 Framebuffer
+                       │
+                       ▼
+                  SDL3 Texture
+                       │
+                       ▼
+                    Janela
+E o Renderer teria acesso a algo equivalente a:
+void SetPixel(int x, int y, Color color);
+
+
+ SUA IMPLEMENTAÇÃO
+                 │
+                 ▼
+        ┌─────────────────┐
+        │   framebuffer   │
+        │                 │
+        │ [pixel][pixel]  │
+        │ [pixel][pixel]  │
+        │ [pixel][pixel]  │
+        └────────┬────────┘
+                 │
+                 │ SDL
+                 ▼
+        ┌─────────────────┐
+        │      janela     │
+        └─────────────────┘
+
+src/
+│
+├── main.cpp
+│
+├── graphics/
+│   ├── Framebuffer.cpp
+│   ├── Framebuffer.hpp
+│   │
+│   ├── Rasterizer.cpp
+│   ├── Rasterizer.hpp
+│   │
+│   ├── Transform.cpp
+│   ├── Transform.hpp
+│   │
+│   ├── Clipping.cpp
+│   ├── Clipping.hpp
+│   │
+│   ├── Texture.cpp
+│   └── Texture.hpp
+│
+├── game/
+│   ├── Game.cpp
+│   ├── Game.hpp
+│   ├── Player.cpp
+│   ├── Player.hpp
+│   └── ...
+│
+├── ui/
+│   ├── Menu.cpp
+│   └── Menu.hpp
+│
+└── math/
+    ├── Vec2.hpp
+    ├── Matrix3.hpp
+    └── Color.hpp
+
+
+┌─────────────────────────────┐
+│           GAME              │
+│                             │
+│ Player / Enemy / Boss       │
+│ Waves / Upgrades / Menu     │
+└──────────────┬──────────────┘
+               │
+┌──────────────▼──────────────┐
+│       GRAPHICS ENGINE       │
+│                             │
+│ SetPixel                    │
+│ Line / Circle / Ellipse     │
+│ Flood Fill / Scanline       │
+│ Texture / Gradient          │
+│ Transformations             │
+│ Window / Viewport           │
+│ Cohen-Sutherland            │
+└──────────────┬──────────────┘
+               │
+┌──────────────▼──────────────┐
+│            SDL3             │
+│                             │
+│ Window                      │
+│ Input                       │
+│ Audio                       │
+│ Load Image                  │
+│ Display Framebuffer         │
+└─────────────────────────────┘
