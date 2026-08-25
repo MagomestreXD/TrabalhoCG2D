@@ -1,5 +1,6 @@
 #include "rasterizer.h"
 #include <SDL3/SDL.h>
+#include <iostream>
 #include <cmath>
 
 using namespace std;
@@ -167,5 +168,205 @@ void Rasterizer::drawElipse(float x0,float y0,float rA,float rB,uint32_t color){
     }
 }
 
+void Rasterizer::intersection(Vertex a, Vertex b, int minx, int miny, vector<vector<int>> *outline){
+    int x0 = ((int) a.getX()) - minx;
+    int y0 = ((int) a.getY()) - miny;
+    int x1 = ((int) b.getX()) - minx;
+    int y1 = ((int) b.getY()) - miny;
 
+    float temp;
+    int dir;
+
+    bool swap = false;
+
+    if(y0 == y1){
+        (*outline)[y0].push_back(x0);
+        return;
+    }
+
+    if(abs(x1 - x0) > abs(y1 - y0)){
+        if(x0 > x1){
+
+            swap = true;
+    
+            temp = x0;
+            x0 = x1;
+            x1 = temp;
+
+            temp = y0;
+            y0 = y1;
+            y1 = temp;
+        }
+
+        int dx = x1 - x0;
+        int dy = y1 - y0;
+
+        if(dy < 0){ dir = -1; }else{ dir = 1;}
+
+        dy = dy * dir;
+
+        int y = y0;
+        
+        int D = 2*dy - dx;
+
+        int prevY = -1;
+
+        for(int x = x0; x <= x1;x++){
+
+            if(!swap){
+                if((y != prevY && y >= y0 && y < y1) || (y != prevY && y > y1 && y <= y0)){
+                    (*outline)[y].push_back(x);
+                    prevY = y;
+                }
+            }else{
+                if((y != prevY && y > y0 && y <= y1) || (y != prevY && y >= y1 && y < y0)){
+                    (*outline)[y].push_back(x);
+                    prevY = y;
+                }
+            }
+
+            if(D >= 0){
+                y += dir;
+                D = D - 2*dx;
+            }
+            D = D + 2*dy;
+        }
+
+    }else{
+         if(y0 > y1){
+
+            swap = true;
+
+            temp = x0;
+            x0 = x1;
+            x1 = temp;
+
+            temp = y0;
+            y0 = y1;
+            y1 = temp;
+        }
+
+        int dx = x1 - x0;
+        int dy = y1 - y0;
+
+        if(dx < 0){ dir = -1; }else{ dir = 1;}
+
+        dx = dx * dir;
+
+        int x = x0;
+        
+        int D = 2*dx - dy;
+
+        for(int y = y0; y <= y1;y++){
+
+            if(!swap){
+                if(y >= y0 && y < y1){
+                    (*outline)[y].push_back(x);
+                }
+            }else{
+                if(y > y0 && y <= y1){
+                    (*outline)[y].push_back(x);
+                }
+            }
+
+            if(D >= 0){
+                x += dir;
+                D = D - 2*dy;
+            }
+            D = D + 2*dx;
+        }       
+    }
+
+}
+
+void Rasterizer::scanLine(Polygon poly,uint32_t color){
+
+    vector<Vertex> *verteces = poly.getVerteces();
+
+    int maxy = (int) (*verteces)[0].getY();
+    int miny = (int) (*verteces)[0].getY();
+    int maxx = (int) (*verteces)[0].getX();
+    int minx = (int) (*verteces)[0].getX();
+
+    for(int i = 1; i < (*verteces).size(); i++){
+        if(maxy < (int) (*verteces)[i].getY()){
+            maxy = (int) (*verteces)[i].getY();
+        }
+        if(miny > (int) (*verteces)[i].getY()){
+            miny = (int) (*verteces)[i].getY();
+        }
+        if(maxx < (int) (*verteces)[i].getX()){
+            maxx = (int) (*verteces)[i].getX();
+        }
+        if(minx > (int) (*verteces)[i].getX()){
+            minx = (int) (*verteces)[i].getX();
+        }
+    }
+    
+    int layers = maxy - miny + 1;
+
+    vector<vector<int>> outline(layers);
+    
+    for(int i = 0; i + 1 < (*verteces).size(); i++){
+        intersection((*verteces)[i],(*verteces)[i+1],minx,miny,&outline);
+    }   
+    intersection((*verteces)[(*verteces).size() - 1],(*verteces)[0],minx,miny,&outline);   
+
+
+    for(int i = 0; i < (*verteces).size();i++){
+        int prev = (i - 1 + (*verteces).size() ) % (*verteces).size();
+        int next = (i + 1 ) % (*verteces).size();
+
+        bool concave = true;
+
+        if((*verteces)[prev].getY() == (*verteces)[i].getY() && (*verteces)[next].getY() == (*verteces)[i].getY()){
+            concave = false;
+        }else if((*verteces)[prev].getY() < (*verteces)[i].getY() && (*verteces)[next].getY() > (*verteces)[i].getY()){
+            concave = false;
+        }else if((*verteces)[prev].getY() > (*verteces)[i].getY() && (*verteces)[next].getY() < (*verteces)[i].getY()){
+            concave = false;
+        }
+
+        if(concave){
+            outline[(*verteces)[i].getY() - miny].push_back((*verteces)[i].getX() - minx);
+            cout<< "Adicionado extra Y = " << (*verteces)[i].getY() << " : " << (*verteces)[i].getX() << endl;
+        }
+    }
+
+    int temp;
+
+    for(int y = 0; y < layers; y++){
+        for(int i = 0; i < outline[y].size() - 1; i++){
+            for(int j = i + 1; j < outline[y].size(); j++){
+                if(outline[y][i] > outline[y][j]){
+                    temp = outline[y][i];
+                    outline[y][i] = outline[y][j];
+                    outline[y][j] = temp;
+                }
+            }
+        }
+    }
+
+    for(int y = 0; y < layers; y++){
+        cout << "y = " << y + miny << ": ";
+
+        for(int x : outline[y]){
+            cout << x + minx << " ";
+        }
+
+        cout << endl;
+    }
+
+    cout << "Depois contagem" << endl;
+
+
+    for(int y = 0; y < layers; y++){
+        for(int i = 0; i + 1 < outline[y].size(); i = i + 2){
+            for(int x = outline[y][i] ; x <= outline[y][i+1]; x++){
+                setPixel(x + minx,y + miny,color);
+            }
+        }
+    }   
+
+}
 

@@ -30,8 +30,9 @@ int main(){
         }
     }
 
-    rasterizer.drawElipse(399,399,300,100,0x00FF00FF);
-    rasterizer.drawElipse(399,399,100,300,0xFF0000FF);
+    Polygon poly(vector<Vertex>{Vertex(100,100),Vertex(100,200),Vertex(150,150),Vertex(200,200),Vertex(200,100)});
+
+    rasterizer.scanLine(poly, 0x00FFFFFF);
 
     SDL_RenderPresent(renderer);
 

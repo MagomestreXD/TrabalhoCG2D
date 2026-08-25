@@ -1,4 +1,6 @@
 #include <SDL3/SDL.h>
+#include <vector>
+#include "polygon.h"
 
 class Rasterizer {
     private:
@@ -16,4 +18,8 @@ class Rasterizer {
         void drawCircle(float x0,float y0,float radius,uint32_t color);
 
         void drawElipse(float x0,float y0,float rA,float rB,uint32_t color);
+
+        void intersection(Vertex a, Vertex b, int minx, int miny, vector<vector<int>> *outline);
+
+        void scanLine(Polygon poly,uint32_t color);
 };
