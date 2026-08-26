@@ -7,9 +7,18 @@ class Rasterizer {
         SDL_Renderer* renderer;
         int height;
         int width;
+        vector <uint32_t> framebuffer;
 
     public: 
         Rasterizer(SDL_Renderer* renderer,int height,int width);
+
+        int getWidth();
+
+        uint32_t* getFramebuffer(){
+            return framebuffer.data();
+        };
+
+        void clearFramebuffer();
 
         void setPixel(int x,int y, uint32_t color);
 
@@ -19,7 +28,7 @@ class Rasterizer {
 
         void drawElipse(float x0,float y0,float rA,float rB,uint32_t color);
 
-        void intersection(Vertex a, Vertex b, int minx, int miny, vector<vector<int>> *outline);
+        void intersection(Vertex a, Vertex b, int minx, int miny, vector<vector<Vertex>> *outline);
 
-        void scanLine(Polygon poly,uint32_t color);
+        void scanLine(Polygon poly);
 };
