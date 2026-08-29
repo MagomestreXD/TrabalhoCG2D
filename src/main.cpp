@@ -47,12 +47,14 @@ int main(){
     Texture gato(32,32,pixels);
 
     Polygon poly(vector<Vertex>{Vertex(-16,-16,0xFF0000FF),Vertex(16,-16,0x0000FFFF),Vertex(16,16,0x00FF00FF),Vertex(-16,16,0xFFFF00FF)});
+ 
+    Polygon polyDif(vector<Vertex>{Vertex(-16,-16,0xFF0000FF),Vertex(48,-16,0x0000FFFF),Vertex(48,48,0x00FF00FF),Vertex(-16,48,0xFFFF00FF)});
 
     float scale = 2.0f;
 
     Texture spriteGato = rasterizer.scanLineNearestNeighbor(poly.scale(scale),gato);
 
-    rasterizer.drawSprite(poly.scale(scale),spriteGato);
+    rasterizer.drawSprite(polyDif.scale(scale),spriteGato);
 
     SDL_Texture* texture = SDL_CreateTexture(
         renderer,

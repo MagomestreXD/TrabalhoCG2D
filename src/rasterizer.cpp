@@ -550,25 +550,48 @@ void Rasterizer::drawSprite(Polygon poly,Texture sprite){
  
     vector<Vertex>* verteces = poly.getVerteces();
 
+    int maxy = (int) (*verteces)[0].getY();
     int miny = (int) (*verteces)[0].getY();
+    int maxx = (int) (*verteces)[0].getX();
     int minx = (int) (*verteces)[0].getX();
 
     for(int i = 1; i < (*verteces).size(); i++){
+        if(maxy < (int) (*verteces)[i].getY()){
+            maxy = (int) (*verteces)[i].getY();
+        }
         if(miny > (int) (*verteces)[i].getY()){
-            miny = (int) (*verteces)[i].getY();
+            miny = (int)(*verteces)[i].getY();
+        }
+        if(maxx < (int) (*verteces)[i].getX()){
+            maxx = (int)(*verteces)[i].getX();
         }
         if(minx > (int) (*verteces)[i].getX()){
             minx = (int) (*verteces)[i].getX();
         }
     }
 
-     for(int y = 0; y < sprite.getHeight(); y++){
-        for(int x = 0; x < sprite.getWidth(); x++){
-            uint32_t pixel = sprite.getPixel(x,y);
-            if(pixel != 0){
-                setPixel(x + minx,y + miny,pixel);
+    int width = maxx - minx + 1;
+    int height = maxy - miny + 1;
+
+    int X = 0;
+    int Y = 0;
+
+    while(Y < height){
+        for(int y = 0; y < sprite.getHeight(); y++){
+            while(X < width){
+                for(int x = 0; x < sprite.getWidth(); x++){
+                    uint32_t pixel = sprite.getPixel(x,y);
+                    if(pixel != 0 && Y + y < height && X + x < width ){
+                        setPixel(X + x + minx,Y + y + miny,pixel);
+                    }
+                }
+
+                X += sprite.getWidth();
             }
+
+            X = 0;
         }
+        Y += sprite.getHeight();
     }
 }
 
