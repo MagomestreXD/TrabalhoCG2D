@@ -1,17 +1,20 @@
+#include <vector>
+
+using namespace std;
 
 class Texture{
     private:
         int height;
         int width;
-        uint32_t* pixels;
+        vector<uint32_t> pixels;
     public:
-        Texture(int width,int height,uint32_t* pixels):width(width),height(height),pixels(pixels){};
+        Texture(int width,int height):width(width),height(height),pixels(width * height){};
         
         uint32_t getPixel(int x,int y){
             return pixels[(y * width) + x];
         }
 
-        uint32_t* getData(){
+        vector<uint32_t>& getData(){
             return pixels;
         }
 

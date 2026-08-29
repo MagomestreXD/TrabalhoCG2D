@@ -60,6 +60,14 @@ build CMakeFiles/MeuJogo.dir/src/rasterizer.cpp.obj: CXX_COMPILER__MeuJogo_unsca
   OBJECT_FILE_DIR = CMakeFiles\MeuJogo.dir\src
   TARGET_SUPPORT_DIR = CMakeFiles\MeuJogo.dir
 
+build CMakeFiles/MeuJogo.dir/src/spriteManager.cpp.obj: CXX_COMPILER__MeuJogo_unscanned_ C$:/Users/levid/OneDrive/Desktop/TrabalhoCG2D/src/spriteManager.cpp || cmake_object_order_depends_target_MeuJogo
+  DEP_FILE = CMakeFiles\MeuJogo.dir\src\spriteManager.cpp.obj.d
+  FLAGS = -std=gnu++20
+  INCLUDES = -IC:/Users/levid/OneDrive/Desktop/TrabalhoCG2D/include
+  OBJECT_DIR = CMakeFiles\MeuJogo.dir
+  OBJECT_FILE_DIR = CMakeFiles\MeuJogo.dir\src
+  TARGET_SUPPORT_DIR = CMakeFiles\MeuJogo.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target MeuJogo
@@ -68,7 +76,7 @@ build CMakeFiles/MeuJogo.dir/src/rasterizer.cpp.obj: CXX_COMPILER__MeuJogo_unsca
 #############################################
 # Link the executable MeuJogo.exe
 
-build MeuJogo.exe: CXX_EXECUTABLE_LINKER__MeuJogo_ CMakeFiles/MeuJogo.dir/src/main.cpp.obj CMakeFiles/MeuJogo.dir/src/rasterizer.cpp.obj | C$:/msys64/ucrt64/lib/libSDL3_image.dll.a C$:/msys64/ucrt64/lib/libSDL3.dll.a
+build MeuJogo.exe: CXX_EXECUTABLE_LINKER__MeuJogo_ CMakeFiles/MeuJogo.dir/src/main.cpp.obj CMakeFiles/MeuJogo.dir/src/rasterizer.cpp.obj CMakeFiles/MeuJogo.dir/src/spriteManager.cpp.obj | C$:/msys64/ucrt64/lib/libSDL3_image.dll.a C$:/msys64/ucrt64/lib/libSDL3.dll.a
   LINK_LIBRARIES = C:/msys64/ucrt64/lib/libSDL3_image.dll.a  C:/msys64/ucrt64/lib/libSDL3.dll.a  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\MeuJogo.dir
   POST_BUILD = C:\Windows\system32\cmd.exe /C "cd /D C:\Users\levid\OneDrive\Desktop\TrabalhoCG2D\build && C:\msys64\ucrt64\bin\cmake.exe -E copy_directory C:/Users/levid/OneDrive/Desktop/TrabalhoCG2D/resources C:/Users/levid/OneDrive/Desktop/TrabalhoCG2D/build/resources"

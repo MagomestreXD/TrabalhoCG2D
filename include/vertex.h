@@ -1,3 +1,4 @@
+
 class Vertex {
     private:
         float x;
@@ -52,4 +53,5 @@ class Vertex {
             
             return;
         }
+
 };

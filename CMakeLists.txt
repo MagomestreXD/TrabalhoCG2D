@@ -11,6 +11,7 @@ find_package(SDL3_image REQUIRED)
 add_executable(MeuJogo
     src/main.cpp
     src/rasterizer.cpp
+    src/spriteManager.cpp
 )
 
 target_include_directories(MeuJogo PRIVATE

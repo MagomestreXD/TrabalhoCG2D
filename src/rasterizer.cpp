@@ -438,7 +438,7 @@ void Rasterizer::scanLine(Polygon poly){
 }
 
 Texture Rasterizer::scanLineNearestNeighbor(Polygon poly,Texture texture){
- 
+
     vector<Vertex>* verteces = poly.getVerteces();
 
     int maxy = (int) (*verteces)[0].getY();
@@ -506,7 +506,7 @@ Texture Rasterizer::scanLineNearestNeighbor(Polygon poly,Texture texture){
 
     int width = maxx - minx + 1;
 
-    Texture sprite(width,height,(uint32_t*) calloc(width*height,sizeof(uint32_t)));
+    Texture sprite(width,height);
 
     for(int y = 0; y < height; y++){
         for(int i = 0; i + 1 < outline[y].size(); i = i + 2){
@@ -521,27 +521,6 @@ Texture Rasterizer::scanLineNearestNeighbor(Polygon poly,Texture texture){
             }
         }
     }   
-    
-cout << "width: " << width
-     << " height: " << height << endl;
-
-cout << "texture: "
-     << texture.getWidth()
-     << "x"
-     << texture.getHeight()
-     << endl;
-
-cout << "POLY: "
-     << maxx - minx + 1
-     << "x"
-     << maxy - miny + 1
-     << endl;
-
-cout << "SPRITE: "
-     << sprite.getWidth()
-     << "x"
-     << sprite.getHeight()
-     << endl;
 
     return sprite;
 }

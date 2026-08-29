@@ -1,7 +1,7 @@
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
 #include <iostream>
-#include "rasterizer.h"
+#include "game.h"
 #define Width 1280
 #define Height 720
 
@@ -26,35 +26,21 @@ int main(){
     
     SDL_Renderer *renderer = SDL_CreateRenderer(window, NULL);
 
-    Rasterizer rasterizer (renderer,Height,Width);   
-
-    rasterizer.clearFrameBuffer();
-
-    SDL_Surface* surface = IMG_Load("resources/bruh.png");
-
-    if (surface == nullptr) {
-        SDL_Log("Erro ao carregar PNG: %s", SDL_GetError());
-    }
-
-    SDL_Surface* rgba = SDL_ConvertSurface(surface,SDL_PIXELFORMAT_RGBA8888);
-
-    SDL_DestroySurface(surface);
-
-    surface = rgba;
-
-    uint32_t* pixels = static_cast<uint32_t*>(surface->pixels);
-
-    Texture gato(32,32,pixels);
-
-    Polygon poly(vector<Vertex>{Vertex(-16,-16,0xFF0000FF),Vertex(16,-16,0x0000FFFF),Vertex(16,16,0x00FF00FF),Vertex(-16,16,0xFFFF00FF)});
+    Polygon poly(vector<Vertex>{Vertex(0,0,0xFF0000FF),Vertex(32,0,0x0000FFFF),Vertex(32,32,0x00FF00FF),Vertex(0,32,0xFFFF00FF)});
  
     Polygon polyDif(vector<Vertex>{Vertex(-16,-16,0xFF0000FF),Vertex(48,-16,0x0000FFFF),Vertex(48,48,0x00FF00FF),Vertex(-16,48,0xFFFF00FF)});
 
     float scale = 2.0f;
 
-    Texture spriteGato = rasterizer.scanLineNearestNeighbor(poly.scale(scale),gato);
+    vector<unique_ptr<Entity>> entities;
 
-    rasterizer.drawSprite(polyDif.scale(scale),spriteGato);
+    entities.push_back(
+        make_unique<Entity>(poly,Vertex(-16,-16),10,SpriteType::player)
+    );
+
+    Game game(move(entities),Rasterizer(renderer,Height,Width),SpriteManager(scale));   
+
+    game.drawFrame();   
 
     SDL_Texture* texture = SDL_CreateTexture(
         renderer,
@@ -64,7 +50,7 @@ int main(){
         Height
     );
 
-    SDL_UpdateTexture(texture,NULL,rasterizer.getFramebuffer(), rasterizer.getWidth() * sizeof(uint32_t));
+    SDL_UpdateTexture(texture,NULL,game.getRasterizer().getFramebuffer(), game.getRasterizer().getWidth() * sizeof(uint32_t));
 
     SDL_RenderClear(renderer);
 
@@ -86,8 +72,6 @@ int main(){
 
     SDL_DestroyWindow(window);
     SDL_Quit();
-    
-    free(spriteGato.getData());
 
     return 0;
 }
