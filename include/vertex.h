@@ -45,4 +45,11 @@ class Vertex {
 
             return color;
         }
+
+        void scale(float scale){
+            x = x * scale;
+            y = y * scale;
+            
+            return;
+        }
 };

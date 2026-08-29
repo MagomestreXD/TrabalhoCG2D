@@ -5,7 +5,7 @@ class Texture{
         int width;
         uint32_t* pixels;
     public:
-        Texture(int height, int width,uint32_t* pixels):height(height),width(width),pixels(pixels){};
+        Texture(int width,int height,uint32_t* pixels):width(width),height(height),pixels(pixels){};
         
         uint32_t getPixel(int x,int y){
             return pixels[(y * width) + x];

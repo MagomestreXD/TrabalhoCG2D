@@ -28,11 +28,7 @@ int main(){
 
     Rasterizer rasterizer (renderer,Height,Width);   
 
-    for(int i = 0; i < Width; i++){
-        for(int j = 0; j < Height; j++){
-            rasterizer.setPixel(i,j,0xFFFFFFFF);
-        }
-    }
+    rasterizer.clearFrameBuffer();
 
     SDL_Surface* surface = IMG_Load("resources/bruh.png");
 
@@ -50,12 +46,13 @@ int main(){
 
     Texture gato(32,32,pixels);
 
-    Polygon poly(vector<Vertex>{Vertex(608,328,0xFF0000FF),Vertex(672,328,0x0000FFFF),Vertex(672,392,0x00FF00FF),Vertex(608,392,0xFFFF00FF)
-});
+    Polygon poly(vector<Vertex>{Vertex(-16,-16,0xFF0000FF),Vertex(16,-16,0x0000FFFF),Vertex(16,16,0x00FF00FF),Vertex(-16,16,0xFFFF00FF)});
 
-    Texture spriteGato = rasterizer.scanLineNearestNeighbor(poly,gato);
+    float scale = 2.0f;
 
-    rasterizer.drawSprite(poly,spriteGato);
+    Texture spriteGato = rasterizer.scanLineNearestNeighbor(poly.scale(scale),gato);
+
+    rasterizer.drawSprite(poly.scale(scale),spriteGato);
 
     SDL_Texture* texture = SDL_CreateTexture(
         renderer,
@@ -88,5 +85,7 @@ int main(){
     SDL_DestroyWindow(window);
     SDL_Quit();
     
+    free(spriteGato.getData());
+
     return 0;
 }

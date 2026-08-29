@@ -19,7 +19,7 @@ class Rasterizer {
             return framebuffer.data();
         };
 
-        void clearFramebuffer();
+        void clearFrameBuffer();
 
         void setPixel(int x,int y, uint32_t color);
 

@@ -11,18 +11,21 @@ int Rasterizer::getWidth(){
     return width;
 }
 
-void Rasterizer::clearFramebuffer(){
+void Rasterizer::clearFrameBuffer(){
     for(int i = 0; i < height * width; i++ ){
         framebuffer[i] = 0x000000FF;
     }
 }
 
 void Rasterizer::setPixel(int x,int y, uint32_t color){
-    if(x < 0 || x >= width || y < 0 || y >= height){
+    int X = x + width/2;
+    int Y = y + height/2;
+
+    if(X < 0 || X >= width || Y < 0 || Y >= height){
         return;
     }
 
-    framebuffer[y * width + x] = color;
+    framebuffer[Y * width + X] = color;
 }
 
 void Rasterizer::drawLine(float x0,float y0,float x1,float y1,uint32_t color){
@@ -436,7 +439,7 @@ void Rasterizer::scanLine(Polygon poly){
 
 Texture Rasterizer::scanLineNearestNeighbor(Polygon poly,Texture texture){
  
-    vector<Vertex> *verteces = poly.getVerteces();
+    vector<Vertex>* verteces = poly.getVerteces();
 
     int maxy = (int) (*verteces)[0].getY();
     int miny = (int) (*verteces)[0].getY();
@@ -448,19 +451,19 @@ Texture Rasterizer::scanLineNearestNeighbor(Polygon poly,Texture texture){
             maxy = (int) (*verteces)[i].getY();
         }
         if(miny > (int) (*verteces)[i].getY()){
-            miny = (int) (*verteces)[i].getY();
+            miny = (int)(*verteces)[i].getY();
         }
         if(maxx < (int) (*verteces)[i].getX()){
-            maxx = (int) (*verteces)[i].getX();
+            maxx = (int)(*verteces)[i].getX();
         }
         if(minx > (int) (*verteces)[i].getX()){
             minx = (int) (*verteces)[i].getX();
         }
     }
     
-    int layers = maxy - miny + 1;
+    int height = maxy - miny + 1;
 
-    vector<vector<Vertex>> outline(layers);
+    vector<vector<Vertex>> outline(height);
     
     for(int i = 0; i + 1 < (*verteces).size(); i++){
         intersection((*verteces)[i],(*verteces)[i+1],minx,miny,&outline);
@@ -489,7 +492,7 @@ Texture Rasterizer::scanLineNearestNeighbor(Polygon poly,Texture texture){
 
     Vertex temp;
 
-    for(int y = 0; y < layers; y++){
+    for(int y = 0; y < height; y++){
         for(int i = 0; i < outline[y].size() - 1; i++){
             for(int j = i + 1; j < outline[y].size(); j++){
                 if(outline[y][i].getX() > outline[y][j].getX()){
@@ -502,31 +505,50 @@ Texture Rasterizer::scanLineNearestNeighbor(Polygon poly,Texture texture){
     }
 
     int width = maxx - minx + 1;
-    int height = maxy - miny + 1;
 
     Texture sprite(width,height,(uint32_t*) calloc(width*height,sizeof(uint32_t)));
 
-    for(int y = 0; y < layers; y++){
+    for(int y = 0; y < height; y++){
         for(int i = 0; i + 1 < outline[y].size(); i = i + 2){
             for(int x = outline[y][i].getX();x <= outline[y][i+1].getX();x++){
-                float u = (float) x / width;
-                float v = (float) outline[y][i].getY() / height;
+                float u = (float) x / (width - 1);
+                float v = (float) y / (height - 1);
 
-                int ux = min((int) (u * texture.getWidth()), texture.getWidth() - 1);
-                int uy = min((int) (v * texture.getHeight()), texture.getHeight() - 1);
+                int ux = (int) (u * (texture.getWidth() - 1));
+                int uy = (int) (v * (texture.getHeight() - 1));
 
                 sprite.getData()[(y * width) + x] = texture.getPixel(ux,uy);
             }
         }
     }   
     
+cout << "width: " << width
+     << " height: " << height << endl;
+
+cout << "texture: "
+     << texture.getWidth()
+     << "x"
+     << texture.getHeight()
+     << endl;
+
+cout << "POLY: "
+     << maxx - minx + 1
+     << "x"
+     << maxy - miny + 1
+     << endl;
+
+cout << "SPRITE: "
+     << sprite.getWidth()
+     << "x"
+     << sprite.getHeight()
+     << endl;
+
     return sprite;
-   
 }
 
 void Rasterizer::drawSprite(Polygon poly,Texture sprite){
  
-    vector<Vertex> *verteces = poly.getVerteces();
+    vector<Vertex>* verteces = poly.getVerteces();
 
     int miny = (int) (*verteces)[0].getY();
     int minx = (int) (*verteces)[0].getX();
@@ -549,4 +571,5 @@ void Rasterizer::drawSprite(Polygon poly,Texture sprite){
         }
     }
 }
+
 
