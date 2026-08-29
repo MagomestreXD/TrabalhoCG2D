@@ -386,7 +386,6 @@ void Rasterizer::scanLine(Polygon poly){
 
         if(concave){
             outline[(*verteces)[i].getY() - miny].push_back(Vertex((*verteces)[i].getX() - minx,(*verteces)[i].getY() - miny,(*verteces)[i].getColor()));
-            cout<< "Adicionado extra Y = " << (*verteces)[i].getY() << " : " << (*verteces)[i].getX() << endl;
         }
     }
 
@@ -402,16 +401,6 @@ void Rasterizer::scanLine(Polygon poly){
                 }
             }
         }
-    }
-
-    for(int y = 0; y < layers; y++){
-        cout << "y = " << y + miny << ": ";
-
-        for(Vertex v : outline[y]){
-            cout << v.getX() + minx << " ";
-        }
-
-        cout << endl;
     }
 
     for(int y = 0; y < layers; y++){
@@ -443,5 +432,121 @@ void Rasterizer::scanLine(Polygon poly){
         }
     }   
 
+}
+
+Texture Rasterizer::scanLineNearestNeighbor(Polygon poly,Texture texture){
+ 
+    vector<Vertex> *verteces = poly.getVerteces();
+
+    int maxy = (int) (*verteces)[0].getY();
+    int miny = (int) (*verteces)[0].getY();
+    int maxx = (int) (*verteces)[0].getX();
+    int minx = (int) (*verteces)[0].getX();
+
+    for(int i = 1; i < (*verteces).size(); i++){
+        if(maxy < (int) (*verteces)[i].getY()){
+            maxy = (int) (*verteces)[i].getY();
+        }
+        if(miny > (int) (*verteces)[i].getY()){
+            miny = (int) (*verteces)[i].getY();
+        }
+        if(maxx < (int) (*verteces)[i].getX()){
+            maxx = (int) (*verteces)[i].getX();
+        }
+        if(minx > (int) (*verteces)[i].getX()){
+            minx = (int) (*verteces)[i].getX();
+        }
+    }
+    
+    int layers = maxy - miny + 1;
+
+    vector<vector<Vertex>> outline(layers);
+    
+    for(int i = 0; i + 1 < (*verteces).size(); i++){
+        intersection((*verteces)[i],(*verteces)[i+1],minx,miny,&outline);
+    }   
+    intersection((*verteces)[(*verteces).size() - 1],(*verteces)[0],minx,miny,&outline);   
+
+
+    for(int i = 0; i < (*verteces).size();i++){
+        int prev = (i - 1 + (*verteces).size() ) % (*verteces).size();
+        int next = (i + 1 ) % (*verteces).size();
+
+        bool concave = false;
+
+        if((*verteces)[prev].getY() == (*verteces)[i].getY() && (*verteces)[next].getY() == (*verteces)[i].getY()){
+            concave = true;
+        }else if((*verteces)[prev].getY() < (*verteces)[i].getY() && (*verteces)[next].getY() < (*verteces)[i].getY()){
+            concave = true;
+        }else if((*verteces)[prev].getY() > (*verteces)[i].getY() && (*verteces)[next].getY() > (*verteces)[i].getY()){
+            concave = true;
+        }
+
+        if(concave){
+            outline[(*verteces)[i].getY() - miny].push_back(Vertex((*verteces)[i].getX() - minx,(*verteces)[i].getY() - miny,(*verteces)[i].getColor()));
+        }
+    }
+
+    Vertex temp;
+
+    for(int y = 0; y < layers; y++){
+        for(int i = 0; i < outline[y].size() - 1; i++){
+            for(int j = i + 1; j < outline[y].size(); j++){
+                if(outline[y][i].getX() > outline[y][j].getX()){
+                    temp = outline[y][i];
+                    outline[y][i] = outline[y][j];
+                    outline[y][j] = temp;
+                }
+            }
+        }
+    }
+
+    int width = maxx - minx + 1;
+    int height = maxy - miny + 1;
+
+    Texture sprite(width,height,(uint32_t*) calloc(width*height,sizeof(uint32_t)));
+
+    for(int y = 0; y < layers; y++){
+        for(int i = 0; i + 1 < outline[y].size(); i = i + 2){
+            for(int x = outline[y][i].getX();x <= outline[y][i+1].getX();x++){
+                float u = (float) x / width;
+                float v = (float) outline[y][i].getY() / height;
+
+                int ux = min((int) (u * texture.getWidth()), texture.getWidth() - 1);
+                int uy = min((int) (v * texture.getHeight()), texture.getHeight() - 1);
+
+                sprite.getData()[(y * width) + x] = texture.getPixel(ux,uy);
+            }
+        }
+    }   
+    
+    return sprite;
+   
+}
+
+void Rasterizer::drawSprite(Polygon poly,Texture sprite){
+ 
+    vector<Vertex> *verteces = poly.getVerteces();
+
+    int miny = (int) (*verteces)[0].getY();
+    int minx = (int) (*verteces)[0].getX();
+
+    for(int i = 1; i < (*verteces).size(); i++){
+        if(miny > (int) (*verteces)[i].getY()){
+            miny = (int) (*verteces)[i].getY();
+        }
+        if(minx > (int) (*verteces)[i].getX()){
+            minx = (int) (*verteces)[i].getX();
+        }
+    }
+
+     for(int y = 0; y < sprite.getHeight(); y++){
+        for(int x = 0; x < sprite.getWidth(); x++){
+            uint32_t pixel = sprite.getPixel(x,y);
+            if(pixel != 0){
+                setPixel(x + minx,y + miny,pixel);
+            }
+        }
+    }
 }
 

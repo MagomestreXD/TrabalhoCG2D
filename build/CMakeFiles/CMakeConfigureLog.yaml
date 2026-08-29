@@ -3067,3 +3067,205 @@ events:
         - "C:/msys64/ucrt64"
         - "C:/Program Files (x86)/MeuJogo"
 ...
+
+---
+events:
+  -
+    kind: "find_package-v1"
+    backtrace:
+      - "CMakeLists.txt:9 (find_package)"
+    name: "SDL3_image"
+    configs:
+      -
+        filename: "SDL3_imageConfig.cmake"
+        kind: "cmake"
+      -
+        filename: "sdl3_image-config.cmake"
+        kind: "cmake"
+    version_request:
+      exact: false
+    settings:
+      required: "required_explicit"
+      quiet: false
+      global: false
+      policy_scope: true
+      bypass_provider: false
+      names:
+        - "SDL3_image"
+      path_suffixes:
+        - ""
+      paths:
+        CMAKE_FIND_USE_CMAKE_PATH: true
+        CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+        CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+        CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+        CMAKE_FIND_USE_INSTALL_PREFIX: true
+        CMAKE_FIND_USE_PACKAGE_ROOT_PATH: true
+        CMAKE_FIND_USE_CMAKE_PACKAGE_REGISTRY: true
+        CMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY: true
+        CMAKE_FIND_ROOT_PATH_MODE: "BOTH"
+    candidates:
+      -
+        path: "C:/Users/levid/OneDrive/Desktop/TrabalhoCG2D/build/CMakeFiles/pkgRedirects/SDL3_imageConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/levid/OneDrive/Desktop/TrabalhoCG2D/build/CMakeFiles/pkgRedirects/sdl3_image-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/Eclipse Adoptium/jdk-25.0.3.9-hotspot/SDL3_imageConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/Eclipse Adoptium/jdk-25.0.3.9-hotspot/sdl3_image-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/Common Files/Oracle/Java/javapath/SDL3_imageConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/Common Files/Oracle/Java/javapath/sdl3_image-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Windows/System32/SDL3_imageConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Windows/System32/sdl3_image-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Windows/SDL3_imageConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Windows/sdl3_image-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Windows/System32/wbem/SDL3_imageConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Windows/System32/wbem/sdl3_image-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Windows/System32/WindowsPowerShell/v1.0/SDL3_imageConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Windows/System32/WindowsPowerShell/v1.0/sdl3_image-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Windows/System32/OpenSSH/SDL3_imageConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Windows/System32/OpenSSH/sdl3_image-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/dotnet/SDL3_imageConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/dotnet/sdl3_image-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/NVIDIA Corporation/PhysX/Common/SDL3_imageConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/NVIDIA Corporation/PhysX/Common/sdl3_image-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/Git/cmd/SDL3_imageConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/Git/cmd/sdl3_image-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/nodejs/SDL3_imageConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/nodejs/sdl3_image-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "D:/MinhaVida/C\u00f3digos/dev_lib/SDL3-3.2.20/lib/x64/SDL3_imageConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "D:/MinhaVida/C\u00f3digos/dev_lib/SDL3-3.2.20/lib/x64/sdl3_image-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "D:/MinhaVida/Instalacoes/Programas/NeoVim/SDL3_imageConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "D:/MinhaVida/Instalacoes/Programas/NeoVim/sdl3_image-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/msys64/ucrt64/SDL3_imageConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/msys64/ucrt64/sdl3_image-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+    found:
+      path: "C:/msys64/ucrt64/lib/cmake/SDL3_image/SDL3_imageConfig.cmake"
+      mode: "config"
+      version: "3.2.4"
+    search_context:
+      ENV{PATH}:
+        - "C:\\Program Files\\Eclipse Adoptium\\jdk-25.0.3.9-hotspot\\bin"
+        - "C:\\Program Files\\Common Files\\Oracle\\Java\\javapath"
+        - "C:\\Windows\\system32"
+        - "C:\\Windows"
+        - "C:\\Windows\\System32\\Wbem"
+        - "C:\\Windows\\system32\\windowspowershell\\v1.0\\"
+        - "C:\\Windows\\system32\\openssh\\"
+        - "c:\\program files\\dotnet\\"
+        - "C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common"
+        - "C:\\Program Files\\Git\\cmd"
+        - "C:\\Program Files\\nodejs\\"
+        - "D:\\MinhaVida\\C\u00f3digos\\dev_lib\\SDL3-3.2.20\\lib\\x64"
+        - "C:\\Program Files (x86)\\ZeroTier\\One\\"
+        - "D:\\MinhaVida\\Instalacoes\\Programas\\NeoVim\\bin"
+        - "C:\\msys64\\ucrt64\\bin"
+        - "D:\\MinhaVida\\Instalacoes\\Programas\\ffmpeg-master-latest-win64-gpl-shared\\bin"
+        - "D:\\MinhaVida\\Instalacoes\\Programas\\Process Lasso\\"
+        - "C:\\Program Files\\WiX Toolset v7.0\\bin\\"
+        - "D:\\MinhaVida\\Instalacoes\\Programas\\cmake-4.4.2-windows-x86_64\\bin"
+        - "C:\\msys64\\usr\\bin"
+        - "C:\\Users\\levid\\.cargo\\bin"
+        - "C:\\Users\\levid\\AppData\\Local\\Programs\\Python\\Python314\\Scripts\\"
+        - "C:\\Users\\levid\\AppData\\Local\\Programs\\Python\\Python314\\"
+        - "C:\\Users\\levid\\AppData\\Local\\Microsoft\\WindowsApps"
+        - "D:\\MinhaVida\\Instalacoes\\Programas\\VSCode\\Microsoft VS Code\\bin"
+        - "C:\\MinGW\\bin"
+        - "C:\\Users\\levid\\AppData\\Roaming\\npm"
+        - "C:\\Users\\levid\\AppData\\Local\\GitHubDesktop\\bin"
+        - "D:\\MinhaVida\\Instalacoes\\Programas\\platform-tools"
+        - "C:\\Users\\levid\\AppData\\Local\\Python\\bin"
+        - "D:\\MinhaVida\\Instalacoes\\Programas\\GitHubDesktop\\bin"
+      CMAKE_INSTALL_PREFIX: "C:/Program Files (x86)/MeuJogo"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "C:/Program Files"
+        - "C:/Program Files (x86)"
+        - "C:/msys64/ucrt64"
+        - "C:/Program Files (x86)/MeuJogo"
+...

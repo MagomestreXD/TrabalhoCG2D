@@ -1,4 +1,5 @@
 #include <SDL3/SDL.h>
+#include <SDL3_image/SDL_image.h>
 #include <iostream>
 #include "rasterizer.h"
 #define Width 1280
@@ -33,9 +34,28 @@ int main(){
         }
     }
 
-    Polygon poly(vector<Vertex>{Vertex(100,100,0xFF0000FF),Vertex(150,150,0x0000FFFF),Vertex(100,200,0x00FF00FF),Vertex(200,200,0xFFFF00FF),Vertex(200,100,0x00FFFFFF)});
+    SDL_Surface* surface = IMG_Load("resources/bruh.png");
 
-    rasterizer.scanLine(poly);
+    if (surface == nullptr) {
+        SDL_Log("Erro ao carregar PNG: %s", SDL_GetError());
+    }
+
+    SDL_Surface* rgba = SDL_ConvertSurface(surface,SDL_PIXELFORMAT_RGBA8888);
+
+    SDL_DestroySurface(surface);
+
+    surface = rgba;
+
+    uint32_t* pixels = static_cast<uint32_t*>(surface->pixels);
+
+    Texture gato(32,32,pixels);
+
+    Polygon poly(vector<Vertex>{Vertex(608,328,0xFF0000FF),Vertex(672,328,0x0000FFFF),Vertex(672,392,0x00FF00FF),Vertex(608,392,0xFFFF00FF)
+});
+
+    Texture spriteGato = rasterizer.scanLineNearestNeighbor(poly,gato);
+
+    rasterizer.drawSprite(poly,spriteGato);
 
     SDL_Texture* texture = SDL_CreateTexture(
         renderer,

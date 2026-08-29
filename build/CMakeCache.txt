@@ -231,6 +231,9 @@ MeuJogo_SOURCE_DIR:STATIC=C:/Users/levid/OneDrive/Desktop/TrabalhoCG2D
 //The directory containing a CMake configuration file for SDL3.
 SDL3_DIR:PATH=C:/msys64/ucrt64/lib/cmake/SDL3
 
+//The directory containing a CMake configuration file for SDL3_image.
+SDL3_image_DIR:PATH=C:/msys64/ucrt64/lib/cmake/SDL3_image
+
 
 ########################
 # INTERNAL cache entries

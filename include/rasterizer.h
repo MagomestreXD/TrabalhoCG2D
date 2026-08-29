@@ -1,6 +1,7 @@
 #include <SDL3/SDL.h>
 #include <vector>
 #include "polygon.h"
+#include "texture.h"
 
 class Rasterizer {
     private:
@@ -31,4 +32,8 @@ class Rasterizer {
         void intersection(Vertex a, Vertex b, int minx, int miny, vector<vector<Vertex>> *outline);
 
         void scanLine(Polygon poly);
+
+        Texture scanLineNearestNeighbor(Polygon poly,Texture texture);
+
+        void drawSprite(Polygon poly,Texture sprite);
 };
