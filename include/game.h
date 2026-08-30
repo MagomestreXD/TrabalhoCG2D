@@ -4,6 +4,7 @@
 #include "entity.h"
 #include "rasterizer.h"
 #include "spriteManager.h"
+#include <iostream>
 
 using namespace std;
 
@@ -25,17 +26,23 @@ class Game {
             return entities;
         }
 
-        Rasterizer getRasterizer(){
-            return rasterizer;
+        Rasterizer* getRasterizer(){
+            return &rasterizer;
         }
 
-        void drawFrame(){
-            drawEntities();
-        }
-
-        void drawEntities(){
+        void updateLogic(double step){
             for(int i = 0; i < entities.size(); i++){
-                entities[i]->drawEntity(&rasterizer,spriteManager.getSprite(entities[i]->getType()),spriteManager.getScale());
+                entities[i]->update(step);
+            }
+        }       
+
+        void drawFrame(double alpha){
+            drawEntities(alpha);
+        }
+
+        void drawEntities(double alpha){
+            for(int i = 0; i < entities.size(); i++){
+                entities[i]->drawEntity(&rasterizer,spriteManager.getSprite(entities[i]->getType()),spriteManager.getScale(), alpha);
             }
         }
         

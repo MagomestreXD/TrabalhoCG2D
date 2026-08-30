@@ -30,6 +30,8 @@ class Rasterizer {
 
         void drawElipse(float x0,float y0,float rA,float rB,uint32_t color);
 
+        void floodFill(Vertex coord,uint32_t color);
+
         void intersection(Vertex a, Vertex b, int minx, int miny, vector<vector<Vertex>> *outline);
 
         void scanLine(Polygon poly);

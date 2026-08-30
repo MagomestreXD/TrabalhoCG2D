@@ -2,6 +2,7 @@
 #include <SDL3/SDL.h>
 #include <iostream>
 #include <cmath>
+#include <queue>
 
 using namespace std;
 
@@ -176,6 +177,42 @@ void Rasterizer::drawElipse(float x0,float y0,float rA,float rB,uint32_t color){
         setPixel(xc - x,yc - y,color);
 
         x--;       
+    }
+}
+
+void Rasterizer::floodFill(Vertex coord,uint32_t color){
+    if(coord.getX() + width/2 < 0 || coord.getX() + width/2 >= width || coord.getY() + height/2 < 0 || coord.getY() + height/2 >= height){
+        return;
+    }
+
+    uint32_t target = framebuffer[(coord.getY() + height/2) * width + (coord.getX() + width/2)];
+
+    if(color == target){
+        return;
+    }
+
+    queue<Vertex>pixels;
+
+    pixels.push(coord);
+
+    while(!pixels.empty()){
+        Vertex pixel = pixels.front();
+        pixels.pop();
+
+        if(pixel.getX() + width/2 < 0 || pixel.getX() + width/2 >= width || pixel.getY() + height/2 < 0 || pixel.getY() + height/2 >= height){
+            continue;
+        }
+
+        if(framebuffer[(pixel.getY() + height/2) * width + (pixel.getX() + width/2)] != target){
+            continue;
+        }
+
+        setPixel(pixel.getX(),pixel.getY(),color);   
+
+        pixels.push(pixel.addCopy(Vertex(1,0)));
+        pixels.push(pixel.addCopy(Vertex(-1,0)));
+        pixels.push(pixel.addCopy(Vertex(0,1)));
+        pixels.push(pixel.addCopy(Vertex(0,-1)));
     }
 }
 

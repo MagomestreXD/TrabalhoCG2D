@@ -54,4 +54,23 @@ class Vertex {
             return;
         }
 
+        void scale(double scale){
+            x = x * scale;
+            y = y * scale;
+            
+            return;
+        }
+
+        void add(Vertex a){
+            x += a.getX();
+            y += a.getY();
+            return;
+        }
+        
+        Vertex addCopy(Vertex a){
+            Vertex copy = *this;
+            copy.add(a);
+            return copy;
+        }
+
 };

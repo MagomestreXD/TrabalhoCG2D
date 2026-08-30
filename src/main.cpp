@@ -35,12 +35,10 @@ int main(){
     vector<unique_ptr<Entity>> entities;
 
     entities.push_back(
-        make_unique<Entity>(poly,Vertex(-16,-16),10,SpriteType::player)
+        make_unique<Entity>(poly,Vertex(-16,-16),20,SpriteType::player)
     );
 
     Game game(move(entities),Rasterizer(renderer,Height,Width),SpriteManager(scale));   
-
-    game.drawFrame();   
 
     SDL_Texture* texture = SDL_CreateTexture(
         renderer,
@@ -50,15 +48,13 @@ int main(){
         Height
     );
 
-    SDL_UpdateTexture(texture,NULL,game.getRasterizer().getFramebuffer(), game.getRasterizer().getWidth() * sizeof(uint32_t));
-
-    SDL_RenderClear(renderer);
-
-    SDL_RenderTexture(renderer,texture,NULL,NULL);
-
-    SDL_RenderPresent(renderer);
-
     bool running = true;
+
+    double step = 1.0/60.0;
+
+    double accumulator = 0.0;
+    
+    Uint64 prevTime = SDL_GetPerformanceCounter();
 
     while(running){
         SDL_Event event;
@@ -68,6 +64,36 @@ int main(){
                 running = false;
             }
         }
+        
+        (*game.getRasterizer()).clearFrameBuffer();
+
+        Uint64 currentTime = SDL_GetPerformanceCounter();
+
+        double deltaTime = (double) (currentTime - prevTime) / SDL_GetPerformanceFrequency();
+
+        deltaTime = min(deltaTime,0.25);
+
+        prevTime = currentTime;
+
+        accumulator += deltaTime;
+
+        while(accumulator >= step){
+            game.updateLogic(step);
+            accumulator -= step;
+        }
+
+        double alpha = accumulator/step;
+
+        game.drawFrame(alpha);
+ 
+        SDL_UpdateTexture(texture,NULL,(*game.getRasterizer()).getFramebuffer(), (*game.getRasterizer()).getWidth() * sizeof(uint32_t));
+
+        SDL_RenderClear(renderer);
+
+        SDL_RenderTexture(renderer,texture,NULL,NULL);
+
+        SDL_RenderPresent(renderer);
+        
     }
 
     SDL_DestroyWindow(window);

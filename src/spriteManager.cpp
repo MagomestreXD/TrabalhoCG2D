@@ -60,7 +60,7 @@ void SpriteManager::iniSprites(Rasterizer* rasterizer){
     Polygon basePoly(vector<Vertex>{Vertex(0,0),Vertex(32,0),Vertex(32,32),Vertex(0,32)});
 
     for(int i = 0; i < static_cast<int>(SpriteType::Count); i++){
-        sprites.push_back((*rasterizer).scanLineNearestNeighbor(basePoly,textures[i]));
+        sprites.push_back((*rasterizer).scanLineNearestNeighbor(basePoly.scale(scale),textures[i]));
     }
 
 }
