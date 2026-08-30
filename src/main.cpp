@@ -34,11 +34,13 @@ int main(){
 
     vector<unique_ptr<Entity>> entities;
 
+    auto player = make_unique<Player>(poly,Vertex(-16,-16),80,SpriteType::player);
+
     entities.push_back(
-        make_unique<Entity>(poly,Vertex(-16,-16),20,SpriteType::player)
+        make_unique<Entity>(poly,Vertex(32,32),0,SpriteType::inimigo)
     );
 
-    Game game(move(entities),Rasterizer(renderer,Height,Width),SpriteManager(scale));   
+    Game game(move(player),move(entities),Rasterizer(renderer,Height,Width),SpriteManager(scale));   
 
     SDL_Texture* texture = SDL_CreateTexture(
         renderer,
@@ -62,6 +64,51 @@ int main(){
         while(SDL_PollEvent(&event)){
             if(event.type == SDL_EVENT_QUIT){
                 running = false;
+            }
+
+            if(event.type == SDL_EVENT_KEY_DOWN){
+                if(event.key.key == SDLK_W){
+                    (*game.getInputs()).up = true;
+                }
+                if(event.key.key == SDLK_S){
+                    (*game.getInputs()).down = true;
+                }
+                if(event.key.key == SDLK_A){
+                    (*game.getInputs()).left = true;
+                }
+                if(event.key.key == SDLK_D){
+                    (*game.getInputs()).right = true;
+                }
+
+                if(event.key.key == SDLK_J){
+                    if((*game.getSpriteManager()).getScale() < 8){
+                        (*game.getSpriteManager()).multiplyScale(2);
+                    }
+                    (*game.getSpriteManager()).updateSprites(game.getRasterizer());
+                }
+
+                if(event.key.key == SDLK_K){
+                    if((*game.getSpriteManager()).getScale() > 0.5){
+                        (*game.getSpriteManager()).multiplyScale(0.5);
+                    }
+                    (*game.getSpriteManager()).updateSprites(game.getRasterizer());
+                }
+
+            }
+
+            if(event.type == SDL_EVENT_KEY_UP){
+                if(event.key.key == SDLK_W){
+                    (*game.getInputs()).up = false;
+                }
+                if(event.key.key == SDLK_S){
+                    (*game.getInputs()).down = false;
+                }
+                if(event.key.key == SDLK_A){
+                    (*game.getInputs()).left = false;
+                }
+                if(event.key.key == SDLK_D){
+                    (*game.getInputs()).right = false;
+                }
             }
         }
         

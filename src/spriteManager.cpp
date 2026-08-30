@@ -12,6 +12,9 @@ void SpriteManager::iniTextures(){
             case SpriteType::player:
                 path = "resources/bruh.png";
                 break;
+            case SpriteType::inimigo:
+                path = "resources/inimigo.png";
+                break;
             default:
                 path = "resources/bruh.png";
                 break;
@@ -65,7 +68,7 @@ void SpriteManager::iniSprites(Rasterizer* rasterizer){
 
 }
 
-void SpriteManager::updateSprites(Rasterizer* rasterizer,float scale){
+void SpriteManager::updateSprites(Rasterizer* rasterizer){
 
     Polygon basePoly(vector<Vertex>{Vertex(0,0),Vertex(32,0),Vertex(32,32),Vertex(0,32)});
 

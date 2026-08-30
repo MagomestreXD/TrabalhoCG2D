@@ -3,7 +3,7 @@
 #include <iostream>
 
 class Entity{
-    private:
+    protected:
         Polygon poly;
         Vertex pos;
         Vertex prevPos;
@@ -59,12 +59,20 @@ class Entity{
             return type;
         }
 
-        void update(double step){
-            direction = Vertex(1,0);
-            direction.scale(speed * step);
+        void update(double step,Vertex playerDir, float playerSpeed){
+            playerDir.scale(playerSpeed * step * -1);
 
             prevPos = pos;
 
-            pos.add(direction);
+            pos.add(playerDir);
+
+        }
+
+        Vertex getDirection(){
+            return direction;
+        }
+
+        float getSpeed(){
+            return speed;
         }
 };

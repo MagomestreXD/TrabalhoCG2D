@@ -16,11 +16,22 @@ class SpriteManager {
 
         void iniTextures();
 
-        void updateSprites(Rasterizer* rasterizer,float scale);
+        void updateSprites(Rasterizer* rasterizer);
 
         Texture getSprite(SpriteType type);
 
         float getScale(){
             return scale;
         }
+    
+        void setScale(float f){
+            scale = f;
+            return;
+        }
+
+        void multiplyScale(float f){
+            scale = scale * f;
+            return;
+        }
 };
+
