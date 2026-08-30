@@ -15,6 +15,8 @@ class Rasterizer {
         Rasterizer(SDL_Renderer* renderer,int height,int width);
 
         int getWidth();
+        
+        int getHeight();
 
         uint32_t* getFramebuffer(){
             return framebuffer.data();

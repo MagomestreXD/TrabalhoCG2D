@@ -12,6 +12,10 @@ int Rasterizer::getWidth(){
     return width;
 }
 
+int Rasterizer::getHeight(){
+    return height;
+}
+
 void Rasterizer::clearFrameBuffer(){
     for(int i = 0; i < height * width; i++ ){
         framebuffer[i] = 0x000000FF;
