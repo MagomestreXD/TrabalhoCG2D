@@ -12,6 +12,7 @@ add_executable(MeuJogo
     src/main.cpp
     src/rasterizer.cpp
     src/spriteManager.cpp
+    src/game.cpp
 )
 
 target_include_directories(MeuJogo PRIVATE

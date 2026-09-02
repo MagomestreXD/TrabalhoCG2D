@@ -80,6 +80,6 @@ void SpriteManager::updateSprites(Rasterizer* rasterizer){
 
 }
 
-Texture SpriteManager::getSprite(SpriteType type){
-    return sprites[static_cast<int>(type)];
+Texture* SpriteManager::getSprite(SpriteType type){
+    return &sprites[static_cast<int>(type)];
 }

@@ -13,7 +13,7 @@ class Entity{
     public: 
         Entity(Polygon poly,Vertex pos,float speed,SpriteType type):poly(poly),pos(pos),prevPos(pos),speed(speed),type(type){};
 
-        void drawEntity(Rasterizer* rasterizer,Texture sprite,float scale,double alpha){
+        void drawEntity(Rasterizer* rasterizer,Texture* sprite,float scale,double alpha){
             Vertex tempCurrent = pos;
             Vertex tempPrev = prevPos;
 

@@ -40,5 +40,5 @@ class Rasterizer {
 
         Texture scanLineNearestNeighbor(Polygon poly,Texture texture);
 
-        void drawSprite(Polygon poly,Texture sprite);
+        void drawSprite(Polygon poly,Texture* sprite);
 };

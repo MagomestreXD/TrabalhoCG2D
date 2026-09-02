@@ -26,9 +26,9 @@ int main(){
     
     SDL_Renderer *renderer = SDL_CreateRenderer(window, NULL);
 
-    Polygon poly(vector<Vertex>{Vertex(0,0,0xFF0000FF),Vertex(32,0,0x0000FFFF),Vertex(32,32,0x00FF00FF),Vertex(0,32,0xFFFF00FF)});
+    Polygon poly(vector<Vertex>{Vertex(0,0),Vertex(32,0),Vertex(32,32),Vertex(0,32)});
  
-    Polygon polyDif(vector<Vertex>{Vertex(-16,-16,0xFF0000FF),Vertex(48,-16,0x0000FFFF),Vertex(48,48,0x00FF00FF),Vertex(-16,48,0xFFFF00FF)});
+    Polygon polyDif(vector<Vertex>{Vertex(-16,-16),Vertex(48,-16),Vertex(32,32),Vertex(0,32)});
 
     float scale = 2.0f;
 

@@ -57,4 +57,8 @@ class Game {
         InputState* getInputs(){
             return &inputs;
         }
+
+        void checkCollisions();
+
+        bool checkCollision();
 };

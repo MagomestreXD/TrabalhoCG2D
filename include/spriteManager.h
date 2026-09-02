@@ -18,7 +18,7 @@ class SpriteManager {
 
         void updateSprites(Rasterizer* rasterizer);
 
-        Texture getSprite(SpriteType type);
+        Texture* getSprite(SpriteType type);
 
         float getScale(){
             return scale;
