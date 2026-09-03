@@ -1,24 +1,28 @@
+#pragma once
 #include "rasterizer.h"
 #include "spriteType.h"
+#include "spriteKey.h"
+#include "sprite.h"
 #include <string>
+#include <optional>
 
 class SpriteManager {
     private:
         float scale;
-        vector<Texture> textures;
-        vector<Texture> sprites;
+        vector<optional<Texture>> textures;
+        vector<Sprite> sprites;
 
     public:
-        SpriteManager(float scale):scale(scale){
+        SpriteManager(float scale):scale(scale),textures(vector<optional<Texture>>(static_cast<int>(SpriteType::Count))){
         }
 
-        void iniSprites(Rasterizer* rasterizer);
+        void loadTexture(SpriteKey* key);
 
-        void iniTextures();
+        void loadSprite(Rasterizer* rasterizer,Polygon* poly,SpriteKey* key);
 
-        void updateSprites(Rasterizer* rasterizer);
+        Texture* getSprite(Rasterizer* rasterizer,Polygon poly,SpriteType type);
 
-        Texture* getSprite(SpriteType type);
+        void emptySprites();
 
         float getScale(){
             return scale;

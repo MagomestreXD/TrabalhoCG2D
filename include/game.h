@@ -17,11 +17,9 @@ class Game {
         InputState inputs;
     public:
         Game(unique_ptr<Player> player,vector<unique_ptr<Entity>> entities,Rasterizer rasterizer,SpriteManager spriteManager):player(move(player)),entities(move(entities)),rasterizer(rasterizer),spriteManager(spriteManager){
-            iniGame();
         };
 
         void iniGame(){
-            spriteManager.iniSprites(&rasterizer);
         }
 
         vector<unique_ptr<Entity>>& getEntities(){
@@ -45,12 +43,12 @@ class Game {
 
         void drawFrame(double alpha){
             drawEntities(alpha);
-            player->drawEntity(&rasterizer,spriteManager.getSprite(player->getType()),spriteManager.getScale(), alpha);
+            player->drawEntity(&rasterizer,&spriteManager,spriteManager.getScale(), alpha);
         }
 
         void drawEntities(double alpha){
             for(int i = 0; i < entities.size(); i++){
-                entities[i]->drawEntity(&rasterizer,spriteManager.getSprite(entities[i]->getType()),spriteManager.getScale(), alpha);
+                entities[i]->drawEntity(&rasterizer,&spriteManager,spriteManager.getScale(), alpha);
             }
         }
         

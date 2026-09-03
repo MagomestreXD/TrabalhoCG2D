@@ -84,14 +84,14 @@ int main(){
                     if((*game.getSpriteManager()).getScale() < 8){
                         (*game.getSpriteManager()).multiplyScale(2);
                     }
-                    (*game.getSpriteManager()).updateSprites(game.getRasterizer());
+                    (*game.getSpriteManager()).emptySprites();
                 }
 
                 if(event.key.key == SDLK_K){
                     if((*game.getSpriteManager()).getScale() > 0.5){
                         (*game.getSpriteManager()).multiplyScale(0.5);
                     }
-                    (*game.getSpriteManager()).updateSprites(game.getRasterizer());
+                    (*game.getSpriteManager()).emptySprites();
                 }
 
             }

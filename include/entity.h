@@ -1,4 +1,5 @@
 #include "rasterizer.h"
+#include "spriteManager.h"
 #include "spriteType.h"
 #include <iostream>
 
@@ -10,10 +11,11 @@ class Entity{
         Vertex direction;
         float speed;
         SpriteType type;
+
     public: 
         Entity(Polygon poly,Vertex pos,float speed,SpriteType type):poly(poly),pos(pos),prevPos(pos),speed(speed),type(type){};
 
-        void drawEntity(Rasterizer* rasterizer,Texture* sprite,float scale,double alpha){
+        void drawEntity(Rasterizer* rasterizer,SpriteManager* spriteManager,float scale,double alpha){
             Vertex tempCurrent = pos;
             Vertex tempPrev = prevPos;
 
@@ -51,7 +53,7 @@ class Entity{
                 return;
             }
 
-            (*rasterizer).drawSprite(betweenPoly,sprite);
+            (*rasterizer).drawSprite(betweenPoly,(*spriteManager).getSprite(rasterizer,poly,type));
 
         }
 
@@ -74,5 +76,9 @@ class Entity{
 
         float getSpeed(){
             return speed;
+        }
+
+        Polygon getPolygon(){
+            return poly;
         }
 };

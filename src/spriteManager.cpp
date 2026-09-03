@@ -3,83 +3,94 @@
 #include <iostream>
 
 
-void SpriteManager::iniTextures(){
+void SpriteManager::loadTexture(SpriteKey* key){
 
-    for(int i = 0; i < static_cast<int>(SpriteType::Count); i++){
-        string path;
+    string path;
 
-        switch(static_cast<SpriteType>(i)){
-            case SpriteType::player:
-                path = "resources/bruh.png";
-                break;
-            case SpriteType::inimigo:
-                path = "resources/inimigo.png";
-                break;
-            default:
-                path = "resources/bruh.png";
-                break;
-        }
+    switch(static_cast<SpriteType>((*key).getSpriteType())){
+        case SpriteType::player:
+            path = "resources/bruh.png";
+            break;
+        case SpriteType::inimigo:
+            path = "resources/inimigo.png";
+            break;
+        default:
+            path = "resources/bruh.png";
+            break;
+    }
 
-        SDL_Surface* surface = IMG_Load(path.c_str());
+    SDL_Surface* surface = IMG_Load(path.c_str());
 
-        if(surface == nullptr){
-            SDL_Log("Erro ao carregar %s: %s", path.c_str(), SDL_GetError());
-            continue;
-        }
+    if(surface == nullptr){
+        SDL_Log("Erro ao carregar %s: %s", path.c_str(), SDL_GetError());
+    }
 
-        SDL_Surface* rgba = SDL_ConvertSurface(surface,SDL_PIXELFORMAT_RGBA8888);
+    SDL_Surface* rgba = SDL_ConvertSurface(surface,SDL_PIXELFORMAT_RGBA8888);
 
-        if(rgba == nullptr){
-            SDL_Log("Erro ao carregar %s: %s", path.c_str(), SDL_GetError());
-            SDL_DestroySurface(surface);
-            continue;
-        }
-
+    if(rgba == nullptr){
+        SDL_Log("Erro ao carregar %s: %s", path.c_str(), SDL_GetError());
         SDL_DestroySurface(surface);
+        return;
+    }
 
-        surface = rgba;
+    SDL_DestroySurface(surface);
 
-        uint32_t* pixels = static_cast<uint32_t*>(surface->pixels);
+    surface = rgba;
 
-        Texture texture(surface->w,surface->h);
+    uint32_t* pixels = static_cast<uint32_t*>(surface->pixels);
 
-        for (int y = 0; y < surface->h; y++) {
-            for (int x = 0; x < surface->w; x++) {
-                texture.getData()[y * surface->w + x] = pixels[y * surface->w + x];
-            }
+    Texture texture(surface->w,surface->h);
+
+    for (int y = 0; y < surface->h; y++) {
+        for (int x = 0; x < surface->w; x++) {
+            texture.getData()[y * surface->w + x] = pixels[y * surface->w + x];
         }
-
-        SDL_DestroySurface(surface);
-
-        textures.push_back(texture);
     }
 
+    SDL_DestroySurface(surface);
+
+    textures[static_cast<int>((*key).getSpriteType())] = texture;
+
 }
 
-void SpriteManager::iniSprites(Rasterizer* rasterizer){
+void SpriteManager::loadSprite(Rasterizer* rasterizer,Polygon* poly,SpriteKey* key){
 
-    iniTextures();
+    int index = static_cast<int>((*key).getSpriteType());
 
-    Polygon basePoly(vector<Vertex>{Vertex(0,0),Vertex(32,0),Vertex(32,32),Vertex(0,32)});
+    if(!textures[index].has_value()){
+        loadTexture(key);
+        cout << "loaded texture: " << static_cast<int>((*key).getSpriteType()) << endl;
+    }
+    
+    sprites.push_back(Sprite((*rasterizer).scanLineNearestNeighbor((*poly).scale(scale),textures[index].value()), *key));           
 
-    for(int i = 0; i < static_cast<int>(SpriteType::Count); i++){
-        sprites.push_back((*rasterizer).scanLineNearestNeighbor(basePoly.scale(scale),textures[i]));
+    return;
+
+}
+
+Texture* SpriteManager::getSprite(Rasterizer* rasterizer,Polygon poly,SpriteType type){
+    SpriteKey key(type);
+
+    for(Sprite& sprite: sprites){
+        if(*sprite.getKey() == key){
+            return sprite.getData();
+        }
     }
 
-}
+    loadSprite(rasterizer,&poly,&key);
+    cout << "loaded sprite: " << static_cast<int>(type) << endl;
 
-void SpriteManager::updateSprites(Rasterizer* rasterizer){
-
-    Polygon basePoly(vector<Vertex>{Vertex(0,0),Vertex(32,0),Vertex(32,32),Vertex(0,32)});
-
-    Polygon poly = basePoly.scale(scale);
-
-    for(int i = 0; i < sprites.size();i++){
-        sprites[i] = (*rasterizer).scanLineNearestNeighbor(poly,textures[i]);
+    for(Sprite& sprite: sprites){
+        if(*sprite.getKey() == key){
+            return sprite.getData();
+        }
     }
 
+    return NULL;
 }
 
-Texture* SpriteManager::getSprite(SpriteType type){
-    return &sprites[static_cast<int>(type)];
+void SpriteManager::emptySprites(){
+
+    sprites.clear();
 }
+
