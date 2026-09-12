@@ -10,9 +10,11 @@ class Rasterizer {
         int height;
         int width;
         vector <uint32_t> framebuffer;
+        Vertex camPos;
+        float zoom;
 
     public: 
-        Rasterizer(SDL_Renderer* renderer,int height,int width);
+        Rasterizer(SDL_Renderer* renderer,int height,int width,float zoom);
 
         int getWidth();
         
@@ -34,11 +36,17 @@ class Rasterizer {
 
         void floodFill(Vertex coord,uint32_t color);
 
-        void intersection(Vertex a, Vertex b, int minx, int miny, vector<vector<Vertex>> *outline);
+        void intersection(Vertex a, Vertex b, int minx, int miny, int maxx, int maxy, vector<vector<Vertex>> *outline);
 
         void scanLine(Polygon poly);
 
         Texture scanLineNearestNeighbor(Polygon poly,Texture texture);
 
         void drawSprite(Polygon poly,Texture* sprite);
+
+        void setCamPos(Vertex pos);
+
+        Vertex getCamPos();
+
+        void multiplyScale(float f);
 };

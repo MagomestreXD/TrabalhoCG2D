@@ -25,6 +25,13 @@ class Player : public Entity{
             if(inputs.right){
                 direction.add(Vertex(1,0));
             }
+
+            direction.scale(speed * step);
+
+            prevPos = pos;
+
+            pos.add(direction);
+
         };
 
 };

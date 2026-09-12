@@ -9,7 +9,7 @@ void SpriteManager::loadTexture(SpriteKey* key){
 
     switch(static_cast<SpriteType>((*key).getSpriteType())){
         case SpriteType::player:
-            path = "resources/bruh.png";
+            path = "resources/mary64.png";
             break;
         case SpriteType::inimigo:
             path = "resources/inimigo.png";
@@ -62,7 +62,7 @@ void SpriteManager::loadSprite(Rasterizer* rasterizer,Polygon* poly,SpriteKey* k
         cout << "loaded texture: " << static_cast<int>((*key).getSpriteType()) << endl;
     }
     
-    sprites.push_back(Sprite((*rasterizer).scanLineNearestNeighbor((*poly).scale(scale),textures[index].value()), *key));           
+    sprites.push_back(Sprite((*rasterizer).scanLineNearestNeighbor(*poly,textures[index].value()),*key));           
 
     return;
 
@@ -93,4 +93,5 @@ void SpriteManager::emptySprites(){
 
     sprites.clear();
 }
+
 

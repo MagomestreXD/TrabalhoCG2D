@@ -6,7 +6,7 @@
 
 using namespace std;
 
-Rasterizer::Rasterizer(SDL_Renderer* renderer,int height,int width): renderer(renderer),height(height),width(width),framebuffer(height * width){}
+Rasterizer::Rasterizer(SDL_Renderer* renderer,int height,int width,float zoom): renderer(renderer),height(height),width(width),framebuffer(height * width), camPos(Vertex(0,0)), zoom(zoom){}
 
 int Rasterizer::getWidth(){
     return width;
@@ -23,8 +23,9 @@ void Rasterizer::clearFrameBuffer(){
 }
 
 void Rasterizer::setPixel(int x,int y, uint32_t color){
-    int X = x + width/2;
-    int Y = y + height/2;
+
+    int X = x - (camPos.getX() * zoom) + width/2;
+    int Y = y - (camPos.getY() * zoom) + height/2;
 
     if(X < 0 || X >= width || Y < 0 || Y >= height){
         return;
@@ -220,11 +221,14 @@ void Rasterizer::floodFill(Vertex coord,uint32_t color){
     }
 }
 
-void Rasterizer::intersection(Vertex a, Vertex b, int minx, int miny, vector<vector<Vertex>> *outline){
+void Rasterizer::intersection(Vertex a, Vertex b, int minx, int miny,int maxx,int maxy, vector<vector<Vertex>> *outline){
     int x0 = ((int) a.getX()) - minx;
     int y0 = ((int) a.getY()) - miny;
     int x1 = ((int) b.getX()) - minx;
     int y1 = ((int) b.getY()) - miny;
+
+    int maxX = maxx - minx;
+    int maxY = maxy - miny;
 
     float temp;
     int dir;
@@ -238,7 +242,9 @@ void Rasterizer::intersection(Vertex a, Vertex b, int minx, int miny, vector<vec
     bool swap = false;
 
     if(y0 == y1){
-        (*outline)[y0].push_back(Vertex(x0,y0,a.getColor()));
+        if(y0 < maxY){
+            (*outline)[y0].push_back(Vertex(x0,y0,a.getColor()));
+        }
         return;
     }
 
@@ -271,38 +277,39 @@ void Rasterizer::intersection(Vertex a, Vertex b, int minx, int miny, vector<vec
 
         int pixelI = 0;
 
-        for(int x = x0; x <= x1;x++){
+        int pixels = x1 - x0;
 
+        for(int x = x0; x <= x1;x++){
             if(!swap){
                 if((y != prevY && y >= y0 && y < y1) || (y != prevY && y > y1 && y <= y0)){
-                    if(!gradient){
-                        (*outline)[y].push_back(Vertex(x,y,a.getColor()));
-                    }else{
-                        int pixels = x1 - x0 + 1;
-                        
-                        float t = ((float) pixelI) / pixels;
+                    if(y != maxY){
+                        if(!gradient){
+                            (*outline)[y].push_back(Vertex(x,y,a.getColor()));
+                        }else{
+                            float t = ((float) pixelI) / pixels;
 
-                        (*outline)[y].push_back(Vertex((float)x,(float)y,(((1 - t) * a.getR()) + (t * b.getR())),(((1 - t) * a.getG()) + (t * b.getG())),(((1 - t) * a.getB()) + (t * b.getB())),(((1 - t) * a.getA()) + (t * b.getA()))));
-                        pixelI += 1;
+                            (*outline)[y].push_back(Vertex((float)x,(float)y,(((1 - t) * a.getR()) + (t * b.getR())),(((1 - t) * a.getG()) + (t * b.getG())),(((1 - t) * a.getB()) + (t * b.getB())),(((1 - t) * a.getA()) + (t * b.getA()))));
+                            pixelI += 1;
+                        }
+
+                        prevY = y;
                     }
-
-                    prevY = y;
                 }
             }else{
                 if((y != prevY && y > y0 && y <= y1) || (y != prevY && y >= y1 && y < y0)){
-                    if(!gradient){
-                        (*outline)[y].push_back(Vertex(x,y,a.getColor()));
-                    }else{
-                        int pixels = x1 - x0 + 1;
-                        
-                        float t = ((float) pixelI) / pixels;
+                    if(y != maxY){
+                        if(!gradient){
+                            (*outline)[y].push_back(Vertex(x,y,a.getColor()));
+                        }else{
+                            float t = ((float) pixelI) / pixels;
 
-                        (*outline)[y].push_back(Vertex(x,y,(((1 - t) * b.getR()) + (t * a.getR())),(((1 - t) * b.getG()) + (t * a.getG())),(((1 - t) * b.getB()) + (t * a.getB())),(((1 - t) * b.getA()) + (t * a.getA()))));
-                 
-                        pixelI += 1;
+                            (*outline)[y].push_back(Vertex(x,y,(((1 - t) * b.getR()) + (t * a.getR())),(((1 - t) * b.getG()) + (t * a.getG())),(((1 - t) * b.getB()) + (t * a.getB())),(((1 - t) * b.getA()) + (t * a.getA()))));
+                     
+                            pixelI += 1;
+                        }
+
+                        prevY = y;
                     }
-
-                    prevY = y;
                 }
             }
 
@@ -340,32 +347,33 @@ void Rasterizer::intersection(Vertex a, Vertex b, int minx, int miny, vector<vec
 
         int pixelI = 0;
 
-        for(int y = y0; y <= y1;y++){
+        int pixels = y1 - y0;
 
+        for(int y = y0; y <= y1;y++){
             if(!swap){
                 if(y >= y0 && y < y1){
-                    if(!gradient){
-                        (*outline)[y].push_back(Vertex(x,y,a.getColor()));
-                    }else{
-                        int pixels = y1 - y0 + 1;
-                        
-                        float t = ((float) pixelI) / pixels;
+                    if(y != maxY){
+                        if(!gradient){
+                            (*outline)[y].push_back(Vertex(x,y,a.getColor()));
+                        }else{
+                            float t = ((float) pixelI) / pixels;
 
-                        (*outline)[y].push_back(Vertex(x,y,(((1 - t) * a.getR()) + (t * b.getR())),(((1 - t) * a.getG()) + (t * b.getG())),(((1 - t) * a.getB()) + (t * b.getB())),(((1 - t) * a.getA()) + (t * b.getA()))));
-                        pixelI += 1;
+                            (*outline)[y].push_back(Vertex(x,y,(((1 - t) * a.getR()) + (t * b.getR())),(((1 - t) * a.getG()) + (t * b.getG())),(((1 - t) * a.getB()) + (t * b.getB())),(((1 - t) * a.getA()) + (t * b.getA()))));
+                            pixelI += 1;
+                        }
                     }
                 }
             }else{
                 if(y > y0 && y <= y1){
-                    if(!gradient){
-                        (*outline)[y].push_back(Vertex(x,y,a.getColor()));
-                    }else {
-                        int pixels = y1 - y0 + 1;
-                        
-                        float t = ((float) pixelI) / pixels;
+                    if(y != maxY){
+                        if(!gradient){
+                            (*outline)[y].push_back(Vertex(x,y,a.getColor()));
+                        }else {
+                            float t = ((float) pixelI) / pixels;
 
-                        (*outline)[y].push_back(Vertex(x,y,(((1 - t) * b.getR()) + (t * a.getR())),(((1 - t) * b.getG()) + (t * a.getG())),(((1 - t) * b.getB()) + (t * a.getB())),(((1 - t) * b.getA()) + (t * a.getA()))));
-                        pixelI += 1;
+                            (*outline)[y].push_back(Vertex(x,y,(((1 - t) * b.getR()) + (t * a.getR())),(((1 - t) * b.getG()) + (t * a.getG())),(((1 - t) * b.getB()) + (t * a.getB())),(((1 - t) * b.getA()) + (t * a.getA()))));
+                            pixelI += 1;
+                        }
                     }
                 }
             }
@@ -404,14 +412,14 @@ void Rasterizer::scanLine(Polygon poly){
         }
     }
     
-    int layers = maxy - miny + 1;
+    int layers = maxy - miny;
 
     vector<vector<Vertex>> outline(layers);
     
     for(int i = 0; i + 1 < (*verteces).size(); i++){
-        intersection((*verteces)[i],(*verteces)[i+1],minx,miny,&outline);
+        intersection((*verteces)[i],(*verteces)[i+1],minx,miny,maxx,maxy,&outline);
     }   
-    intersection((*verteces)[(*verteces).size() - 1],(*verteces)[0],minx,miny,&outline);   
+    intersection((*verteces)[(*verteces).size() - 1],(*verteces)[0],minx,miny,maxx,maxy,&outline);   
 
 
     for(int i = 0; i < (*verteces).size();i++){
@@ -452,7 +460,7 @@ void Rasterizer::scanLine(Polygon poly){
             int pixelI = 0;
 
             if(outline[y][i].getColor() == outline[y][i+1].getColor()){
-                for(int x = outline[y][i].getX() ; x <= outline[y][i+1].getX(); x++){
+                for(int x = outline[y][i].getX() ; x < outline[y][i+1].getX(); x++){
                     setPixel(x + minx,y + miny,outline[y][i].getColor());
                 }
             }else{
@@ -502,15 +510,14 @@ Texture Rasterizer::scanLineNearestNeighbor(Polygon poly,Texture texture){
         }
     }
     
-    int height = maxy - miny + 1;
+    int height = maxy - miny;
 
     vector<vector<Vertex>> outline(height);
     
     for(int i = 0; i + 1 < (*verteces).size(); i++){
-        intersection((*verteces)[i],(*verteces)[i+1],minx,miny,&outline);
+        intersection((*verteces)[i],(*verteces)[i+1],minx,miny,maxx,maxy,&outline);
     }   
-    intersection((*verteces)[(*verteces).size() - 1],(*verteces)[0],minx,miny,&outline);   
-
+    intersection((*verteces)[(*verteces).size() - 1],(*verteces)[0],minx,miny,maxx,maxy,&outline);   
 
     for(int i = 0; i < (*verteces).size();i++){
         int prev = (i - 1 + (*verteces).size() ) % (*verteces).size();
@@ -545,13 +552,13 @@ Texture Rasterizer::scanLineNearestNeighbor(Polygon poly,Texture texture){
         }
     }
 
-    int width = maxx - minx + 1;
+    int width = maxx - minx;
 
     Texture sprite(width,height);
 
     for(int y = 0; y < height; y++){
         for(int i = 0; i + 1 < outline[y].size(); i = i + 2){
-            for(int x = outline[y][i].getX();x <= outline[y][i+1].getX();x++){
+            for(int x = outline[y][i].getX();x < outline[y][i+1].getX();x++){
                 float u = (float) x / (width - 1);
                 float v = (float) y / (height - 1);
 
@@ -567,7 +574,6 @@ Texture Rasterizer::scanLineNearestNeighbor(Polygon poly,Texture texture){
 }
 
 void Rasterizer::drawSprite(Polygon poly,Texture* sprite){
- 
     vector<Vertex>* verteces = poly.getVerteces();
 
     int maxy = (int) (*verteces)[0].getY();
@@ -590,18 +596,18 @@ void Rasterizer::drawSprite(Polygon poly,Texture* sprite){
         }
     }
 
-    int width = maxx - minx + 1;
-    int height = maxy - miny + 1;
+    int polyWidth = maxx - minx;
+    int polyHeight = maxy - miny;
 
     int X = 0;
     int Y = 0;
 
-    while(Y < height){
+    while(Y < polyHeight){
         for(int y = 0; y < (*sprite).getHeight(); y++){
-            while(X < width){
+            while(X < polyWidth){
                 for(int x = 0; x < (*sprite).getWidth(); x++){
                     uint32_t pixel = (*sprite).getPixel(x,y);
-                    if(pixel != 0 && Y + y < height && X + x < width ){
+                    if(pixel != 0 && Y + y < polyHeight && X + x < polyWidth){
                         setPixel(X + x + minx,Y + y + miny,pixel);
                     }
                 }
@@ -615,4 +621,16 @@ void Rasterizer::drawSprite(Polygon poly,Texture* sprite){
     }
 }
 
+void Rasterizer::setCamPos(Vertex pos){
+    camPos = pos;
+}
+
+Vertex Rasterizer::getCamPos(){
+    return camPos;
+}
+
+void Rasterizer::multiplyScale(float f){
+    zoom = zoom * f;
+    return;
+}
 

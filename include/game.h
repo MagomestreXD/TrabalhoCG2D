@@ -37,11 +37,21 @@ class Game {
         void updateLogic(double step){
             player->update(step,inputs);
             for(int i = 0; i < entities.size(); i++){
-                entities[i]->update(step,player->getDirection(),player->getSpeed());
+                entities[i]->update();
             }
         }       
 
         void drawFrame(double alpha){
+
+            Vertex tempCurrent = player->getPos();
+            Vertex tempPrev = player->getPrevPos();
+
+            tempCurrent.scale(alpha);
+            tempPrev.scale(1-alpha);
+            tempCurrent.add(tempPrev);
+
+            rasterizer.setCamPos(tempCurrent);
+
             drawEntities(alpha);
             player->drawEntity(&rasterizer,&spriteManager,spriteManager.getScale(), alpha);
         }

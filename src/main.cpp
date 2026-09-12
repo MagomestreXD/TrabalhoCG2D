@@ -26,21 +26,21 @@ int main(){
     
     SDL_Renderer *renderer = SDL_CreateRenderer(window, NULL);
 
-    Polygon poly(vector<Vertex>{Vertex(0,0),Vertex(32,0),Vertex(32,32),Vertex(0,32)});
+    Polygon poly(vector<Vertex>{Vertex(-16,-16),Vertex(16,-16),Vertex(16,16),Vertex(-16,16)});
  
-    Polygon polyDif(vector<Vertex>{Vertex(-16,-16),Vertex(48,-16),Vertex(32,32),Vertex(0,32)});
+    Polygon polyDif(vector<Vertex>{Vertex(-16,-32),Vertex(16,-32),Vertex(16,32),Vertex(-16,32)});
 
     float scale = 2.0f;
 
     vector<unique_ptr<Entity>> entities;
 
-    auto player = make_unique<Player>(poly,Vertex(-16,-16),80,SpriteType::player);
+    auto player = make_unique<Player>(polyDif,Vertex(0,0),80,SpriteType::player);
 
     entities.push_back(
-        make_unique<Entity>(poly,Vertex(32,32),0,SpriteType::inimigo)
+        make_unique<Entity>(poly,Vertex(40,40),0,SpriteType::inimigo)
     );
 
-    Game game(move(player),move(entities),Rasterizer(renderer,Height,Width),SpriteManager(scale));   
+    Game game(move(player),move(entities),Rasterizer(renderer,Height,Width,scale),SpriteManager(scale));   
 
     SDL_Texture* texture = SDL_CreateTexture(
         renderer,
@@ -83,6 +83,7 @@ int main(){
                 if(event.key.key == SDLK_J){
                     if((*game.getSpriteManager()).getScale() < 8){
                         (*game.getSpriteManager()).multiplyScale(2);
+                        (*game.getRasterizer()).multiplyScale(2);
                     }
                     (*game.getSpriteManager()).emptySprites();
                 }
@@ -90,6 +91,7 @@ int main(){
                 if(event.key.key == SDLK_K){
                     if((*game.getSpriteManager()).getScale() > 0.5){
                         (*game.getSpriteManager()).multiplyScale(0.5);
+                        (*game.getRasterizer()).multiplyScale(0.5);
                     }
                     (*game.getSpriteManager()).emptySprites();
                 }

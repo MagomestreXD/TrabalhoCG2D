@@ -45,15 +45,15 @@ class Entity{
                 }
             }
 
-            int halfWidth = (*rasterizer).getWidth()/2; 
-            int halfHeight = (*rasterizer).getHeight()/2;
+            int halfWidth = (*rasterizer).getWidth()/2 - (int)((*rasterizer).getCamPos().getX() * scale); 
+            int halfHeight = (*rasterizer).getHeight()/2 - (int)((*rasterizer).getCamPos().getY() * scale);
 
             if(maxx + halfWidth < 0 || minx + halfWidth >= (*rasterizer).getWidth() || 
                maxy + halfHeight < 0 || miny + halfHeight >= (*rasterizer).getHeight() ){
                 return;
             }
 
-            (*rasterizer).drawSprite(betweenPoly,(*spriteManager).getSprite(rasterizer,poly,type));
+            (*rasterizer).drawSprite(betweenPoly,(*spriteManager).getSprite(rasterizer,poly.scale(scale),type));
 
         }
 
@@ -61,12 +61,7 @@ class Entity{
             return type;
         }
 
-        void update(double step,Vertex playerDir, float playerSpeed){
-            playerDir.scale(playerSpeed * step * -1);
-
-            prevPos = pos;
-
-            pos.add(playerDir);
+        void update(){
 
         }
 
@@ -80,5 +75,13 @@ class Entity{
 
         Polygon getPolygon(){
             return poly;
+        }
+
+        Vertex getPos(){
+            return pos;
+        }
+
+        Vertex getPrevPos(){
+            return prevPos;
         }
 };
