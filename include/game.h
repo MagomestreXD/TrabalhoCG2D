@@ -39,6 +39,8 @@ class Game {
             for(int i = 0; i < entities.size(); i++){
                 entities[i]->update();
             }
+
+            checkCollisions();
         }       
 
         void drawFrame(double alpha){
@@ -68,5 +70,5 @@ class Game {
 
         void checkCollisions();
 
-        bool checkCollision();
+        bool checkCollision(Polygon pa, Polygon pb);
 };

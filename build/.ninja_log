@@ -66,3 +66,12 @@
 22	1558	8109311657048112	CMakeFiles/MeuJogo.dir/src/rasterizer.cpp.obj	8ca09c7eed9dd57b
 14	1816	8109311656964141	CMakeFiles/MeuJogo.dir/src/main.cpp.obj	d24327f005442ec6
 1816	2147	8109311674988542	MeuJogo.exe	bac2b2134cead63b
+22	2488	8109444584948302	CMakeFiles/MeuJogo.dir/src/main.cpp.obj	d24327f005442ec6
+41	1301	8109444862277581	CMakeFiles/MeuJogo.dir/src/game.cpp.obj	df486f72767dbf5b
+33	1546	8109444862198501	CMakeFiles/MeuJogo.dir/src/main.cpp.obj	d24327f005442ec6
+1546	1941	8109444877325780	MeuJogo.exe	bac2b2134cead63b
+31	1160	8109448510362300	CMakeFiles/MeuJogo.dir/src/game.cpp.obj	df486f72767dbf5b
+1162	1502	8109448521672110	MeuJogo.exe	bac2b2134cead63b
+43	1284	8109450486392562	CMakeFiles/MeuJogo.dir/src/game.cpp.obj	df486f72767dbf5b
+35	1592	8109450486307177	CMakeFiles/MeuJogo.dir/src/main.cpp.obj	d24327f005442ec6
+1593	1930	8109450501881752	MeuJogo.exe	bac2b2134cead63b
