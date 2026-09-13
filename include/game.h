@@ -70,5 +70,7 @@ class Game {
 
         void checkCollisions();
 
-        bool checkCollision(Polygon pa, Polygon pb);
+        bool checkCollision(Polygon polya, Polygon polyb, Vertex posa, Vertex posb);
+
+        bool testSAT(Polygon* pa,Polygon* pb);
 };
