@@ -12,23 +12,23 @@ class Polygon {
             return &verteces;
         }
 
-        Polygon scale(float scale){
+        Polygon multMatrix(float matrix[3][3]){
             vector<Vertex> copy = verteces;
 
             for(int i = 0; i < copy.size(); i++){
-                copy[i].scale(scale);
+                copy[i].multMatrix(matrix);
             }
-
+            
             return Polygon(copy);
-        }       
+        }
 
-        Polygon add(Vertex a){
+        Polygon multMatrix(double matrix[3][3]){
             vector<Vertex> copy = verteces;
 
             for(int i = 0; i < copy.size(); i++){
-                copy[i].add(a);
+                copy[i].multMatrix(matrix);
             }
-
+            
             return Polygon(copy);
         }
 };

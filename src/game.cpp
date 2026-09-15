@@ -26,8 +26,11 @@ bool Game::checkCollision(Polygon polya, Polygon polyb, Vertex posa, Vertex posb
         return false;
     }
     
-    Polygon pa = polya.add(posa);
-    Polygon pb = polyb.add(posb);
+    float transPosA [3][3] = {{1,0,posa.getX()},{0,1,posa.getY()},{0,0,1}};
+    float transPosB [3][3] = {{1,0,posb.getX()},{0,1,posb.getY()},{0,0,1}};
+
+    Polygon pa = polya.multMatrix(transPosA);
+    Polygon pb = polyb.multMatrix(transPosB);
 
     vector<Vertex>* va = pa.getVerteces();
     vector<Vertex>* vb = pb.getVerteces();

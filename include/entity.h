@@ -2,6 +2,7 @@
 #include "spriteManager.h"
 #include "spriteType.h"
 #include <iostream>
+#include <iomanip>
 
 class Entity{
     protected:
@@ -19,11 +20,21 @@ class Entity{
             Vertex tempCurrent = pos;
             Vertex tempPrev = prevPos;
 
-            tempCurrent.scale(alpha);
-            tempPrev.scale(1-alpha);
-            tempCurrent.add(tempPrev);
+            double alphaScale [3][3] = {{alpha,0,0},{0,alpha,0},{0,0,1}};
+            double nAlphaScale [3][3] = {{1-alpha,0,0},{0,1-alpha,0},{0,0,1}};
 
-            Polygon betweenPoly = poly.add(tempCurrent).scale(scale);
+            tempCurrent.multMatrix(alphaScale);
+            tempPrev.multMatrix(nAlphaScale);
+
+            double translation [3][3] = {{1,0,tempPrev.getX()},{0,1,tempPrev.getY()},{0,0,1}};
+
+            tempCurrent.multMatrix(translation);
+
+            double betweenPosM [3][3] = {{1,0,tempCurrent.getX()},{0,1,tempCurrent.getY()},{0,0,1}};
+
+            float scaleM [3][3] = {{scale,0,0},{0,scale,0},{0,0,1}};
+
+            Polygon betweenPoly = poly.multMatrix(betweenPosM).multMatrix(scaleM);
 
             int maxy = (int) (*betweenPoly.getVerteces())[0].getY();
             int miny = (int) (*betweenPoly.getVerteces())[0].getY();
@@ -53,7 +64,7 @@ class Entity{
                 return;
             }
 
-            (*rasterizer).drawSprite(betweenPoly,(*spriteManager).getSprite(rasterizer,poly.scale(scale),type));
+            (*rasterizer).drawSprite(betweenPoly,(*spriteManager).getSprite(rasterizer,poly.multMatrix(scaleM),type));
 
         }
 

@@ -3,6 +3,7 @@ class Vertex {
     private:
         float x;
         float y;
+        float z = 1;
         uint8_t r;
         uint8_t g;
         uint8_t b;
@@ -23,6 +24,10 @@ class Vertex {
 
         float getY(){
             return y;
+        }
+
+        float getZ(){
+            return z;
         }
 
         uint8_t getR(){
@@ -47,20 +52,6 @@ class Vertex {
             return color;
         }
 
-        void scale(float scale){
-            x = x * scale;
-            y = y * scale;
-            
-            return;
-        }
-
-        void scale(double scale){
-            x = x * scale;
-            y = y * scale;
-            
-            return;
-        }
-
         void add(Vertex a){
             x += a.getX();
             y += a.getY();
@@ -71,6 +62,30 @@ class Vertex {
             Vertex copy = *this;
             copy.add(a);
             return copy;
+        }
+
+        void multMatrix(float matrix [3][3]){
+            float prevx = x;
+            float prevy = y;
+            float prevz = z;
+
+            x = prevx * matrix[0][0] + prevy * matrix[0][1] + prevz * matrix[0][2];
+            y = prevx * matrix[1][0] + prevy * matrix[1][1] + prevz * matrix[1][2];
+            z = prevx * matrix[2][0] + prevy * matrix[2][1] + prevz * matrix[2][2];
+
+            return;
+        }
+
+        void multMatrix(double matrix [3][3]){
+            double prevx = x;
+            double prevy = y;
+            double prevz = z;
+
+            x = prevx * matrix[0][0] + prevy * matrix[0][1] + prevz * matrix[0][2];
+            y = prevx * matrix[1][0] + prevy * matrix[1][1] + prevz * matrix[1][2];
+            z = prevx * matrix[2][0] + prevy * matrix[2][1] + prevz * matrix[2][2];
+
+            return;
         }
 
 };

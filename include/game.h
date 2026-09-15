@@ -48,9 +48,15 @@ class Game {
             Vertex tempCurrent = player->getPos();
             Vertex tempPrev = player->getPrevPos();
 
-            tempCurrent.scale(alpha);
-            tempPrev.scale(1-alpha);
-            tempCurrent.add(tempPrev);
+            double alphaScale [3][3] = {{alpha,0,0},{0,alpha,0},{0,0,1}};
+            double nAlphaScale [3][3] = {{1-alpha,0,0},{0,1-alpha,0},{0,0,1}};
+
+            tempCurrent.multMatrix(alphaScale);
+            tempPrev.multMatrix(nAlphaScale);
+
+            double translation [3][3] = {{1,0,tempPrev.getX()},{0,1,tempPrev.getY()},{0,0,1}};
+
+            tempCurrent.multMatrix(translation);
 
             rasterizer.setCamPos(tempCurrent);
 
@@ -60,7 +66,7 @@ class Game {
 
         void drawEntities(double alpha){
             for(int i = 0; i < entities.size(); i++){
-                entities[i]->drawEntity(&rasterizer,&spriteManager,spriteManager.getScale(), alpha);
+                entities[i]->drawEntity(&rasterizer,&spriteManager,spriteManager.getScale(),alpha);
             }
         }
         

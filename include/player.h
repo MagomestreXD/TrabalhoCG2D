@@ -11,26 +11,34 @@ class Player : public Entity{
             direction = Vertex(0,0);
             
             if(inputs.up){
-                direction.add(Vertex(0,-1));
+                float dir [3][3] = {{1,0,0},{0,1,-1},{0,0,1}};
+                direction.multMatrix(dir);
             }
 
             if(inputs.down){
-                direction.add(Vertex(0,1));
+                float dir [3][3] = {{1,0,0},{0,1,1},{0,0,1}};
+                direction.multMatrix(dir);
             }
 
             if(inputs.left){
-                direction.add(Vertex(-1,0));
+                float dir [3][3] = {{1,0,-1},{0,1,0},{0,0,1}};
+                direction.multMatrix(dir);
             }
 
             if(inputs.right){
-                direction.add(Vertex(1,0));
+                float dir [3][3] = {{1,0,1},{0,1,0},{0,0,1}};
+                direction.multMatrix(dir);
             }
 
-            direction.scale(speed * step);
+            double stepM [3][3]= {{speed * step,0,0},{0,speed * step,0},{0,0,1}};       
+
+            direction.multMatrix(stepM);
 
             prevPos = pos;
 
-            pos.add(direction);
+            float velocity [3][3] = {{1,0,direction.getX()},{0,1,direction.getY()},{0,0,1}};
+
+            pos.multMatrix(velocity);
 
         };
 
