@@ -700,7 +700,8 @@ void Rasterizer::drawSprite(Polygon poly, Texture* sprite){
             uint32_t pixel = textureData[textureIndex];
 
             if(pixel != 0){
-                setPixel(x, pixel, framebufferIndex);
+                framebuffer[framebufferIndex + x] = pixel;
+                //setPixel(x, pixel, framebufferIndex);
             }
 
             textureIndex++;
