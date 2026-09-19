@@ -738,9 +738,6 @@ void Rasterizer::drawSprite(Polygon poly, Texture* sprite,bool opaque){
         }
     }
 
-    int spriteWidth = sprite->getWidth();
-    int spriteHeight = sprite->getHeight();
-
     int camX = (int)(camPos.getX() * zoom);
     int camY = (int)(camPos.getY() * zoom);
 
@@ -767,20 +764,22 @@ void Rasterizer::drawSprite(Polygon poly, Texture* sprite,bool opaque){
 
     vector<uint32_t>& textureData = sprite->getData();
 
-    for(int y = 0; y < drawMaxY - drawMinY; y++){
+    int numOfLines = drawMaxY - drawMinY;
+
+    int numOfPixels = drawMaxX - drawMinX;
+
+    for(int y = 0; y < numOfLines ; y++){
 
         int textureY = textureStartY + y;
 
         int framebufferIndex = (drawMinY + y) * width;
         int textureIndex = textureY * textureWidth + textureStartX;
 
-        int quantidadePixels = drawMaxX - drawMinX;
-
         if(opaque){
             memcpy(
                 &framebuffer[framebufferIndex + drawMinX],
                 &textureData[textureIndex],
-                quantidadePixels * sizeof(uint32_t)
+                numOfPixels * sizeof(uint32_t)
             );
         }else{
             for(int x = drawMinX; x < drawMaxX; x++){
@@ -797,7 +796,6 @@ void Rasterizer::drawSprite(Polygon poly, Texture* sprite,bool opaque){
         }
     }
 }
-
 
 void Rasterizer::setCamPos(Vertex pos){
     camPos = pos;
