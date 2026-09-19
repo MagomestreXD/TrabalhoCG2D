@@ -64,7 +64,7 @@ class Entity{
                 return;
             }
 
-            (*rasterizer).drawSprite(betweenPoly,(*spriteManager).getSprite(rasterizer,poly.multMatrix(scaleM),type));
+            (*rasterizer).drawSprite(betweenPoly,(*spriteManager).getSprite(rasterizer,poly.multMatrix(scaleM),type),false);
 
         }
 

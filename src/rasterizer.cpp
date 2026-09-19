@@ -632,6 +632,7 @@ void Rasterizer::drawSprite(Polygon poly,Texture* sprite){
 }
 */
 
+/*
 void Rasterizer::drawSprite(Polygon poly, Texture* sprite){
 
     vector<Vertex>* verteces = poly.getVerteces();
@@ -705,6 +706,94 @@ void Rasterizer::drawSprite(Polygon poly, Texture* sprite){
             }
 
             textureIndex++;
+        }
+    }
+}
+*/
+
+void Rasterizer::drawSprite(Polygon poly, Texture* sprite,bool opaque){
+
+    vector<Vertex>* verteces = poly.getVerteces();
+
+    int maxy = (int)(*verteces)[0].getY();
+    int miny = (int)(*verteces)[0].getY();
+    int maxx = (int)(*verteces)[0].getX();
+    int minx = (int)(*verteces)[0].getX();
+
+    for(int i = 1; i < (*verteces).size(); i++){
+        if(maxy < (int)(*verteces)[i].getY()){
+            maxy = (int)(*verteces)[i].getY();
+        }
+
+        if(miny > (int)(*verteces)[i].getY()){
+            miny = (int)(*verteces)[i].getY();
+        }
+
+        if(maxx < (int)(*verteces)[i].getX()){
+            maxx = (int)(*verteces)[i].getX();
+        }
+
+        if(minx > (int)(*verteces)[i].getX()){
+            minx = (int)(*verteces)[i].getX();
+        }
+    }
+
+    int spriteWidth = sprite->getWidth();
+    int spriteHeight = sprite->getHeight();
+
+    int camX = (int)(camPos.getX() * zoom);
+    int camY = (int)(camPos.getY() * zoom);
+
+    int screenMinX = minx - camX + width / 2;
+    int screenMaxX = maxx - camX + width / 2;
+
+    int screenMinY = miny - camY + height / 2;
+    int screenMaxY = maxy - camY + height / 2;
+
+    int drawMinX = max(0, screenMinX);
+    int drawMaxX = min(width, screenMaxX);
+
+    int drawMinY = max(0, screenMinY);
+    int drawMaxY = min(height, screenMaxY);
+
+    if(drawMinX >= drawMaxX || drawMinY >= drawMaxY){
+        return;
+    }
+
+    int textureStartX = drawMinX - screenMinX;
+    int textureStartY = drawMinY - screenMinY;
+
+    int textureWidth = sprite->getWidth();
+
+    vector<uint32_t>& textureData = sprite->getData();
+
+    for(int y = 0; y < drawMaxY - drawMinY; y++){
+
+        int textureY = textureStartY + y;
+
+        int framebufferIndex = (drawMinY + y) * width;
+        int textureIndex = textureY * textureWidth + textureStartX;
+
+        int quantidadePixels = drawMaxX - drawMinX;
+
+        if(opaque){
+            memcpy(
+                &framebuffer[framebufferIndex + drawMinX],
+                &textureData[textureIndex],
+                quantidadePixels * sizeof(uint32_t)
+            );
+        }else{
+            for(int x = drawMinX; x < drawMaxX; x++){
+
+                uint32_t pixel = textureData[textureIndex];
+
+                if(pixel != 0){
+                    framebuffer[framebufferIndex + x] = pixel;
+                    //setPixel(x, pixel, framebufferIndex);
+                }
+
+                textureIndex++;
+            }
         }
     }
 }
