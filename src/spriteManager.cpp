@@ -14,6 +14,9 @@ void SpriteManager::loadTexture(SpriteKey* key){
         case SpriteType::inimigo:
             path = "resources/inimigo.png";
             break;
+        case SpriteType::room01:
+            path = "resources/room01.png";
+            break;
         default:
             path = "resources/bruh.png";
             break;
@@ -59,7 +62,6 @@ void SpriteManager::loadSprite(Rasterizer* rasterizer,Polygon* poly,SpriteKey* k
 
     if(!textures[index].has_value()){
         loadTexture(key);
-        cout << "loaded texture: " << static_cast<int>((*key).getSpriteType()) << endl;
     }
     
     sprites.push_back(Sprite((*rasterizer).scanLineNearestNeighbor(*poly,textures[index].value()),*key));           
@@ -78,7 +80,68 @@ Texture* SpriteManager::getSprite(Rasterizer* rasterizer,Polygon poly,SpriteType
     }
 
     loadSprite(rasterizer,&poly,&key);
-    cout << "loaded sprite: " << static_cast<int>(type) << endl;
+
+    for(Sprite& sprite: sprites){
+        if(*sprite.getKey() == key){
+            return sprite.getData();
+        }
+    }
+
+    return NULL;
+}
+
+void SpriteManager::loadSprite(Rasterizer* rasterizer,float* minx,float* maxx,float* miny,float* maxy,Polygon* spritePoly,SpriteKey* key){
+
+    int index = static_cast<int>((*key).getSpriteType());
+
+    if(!textures[index].has_value()){
+        loadTexture(key);
+    }
+    
+    Texture smallTexture((*rasterizer).scanLineNearestNeighbor(*spritePoly,textures[index].value()));           
+
+    int polyWidth = (int) *maxx - *minx;
+    int polyHeight = (int) *maxy - *miny;
+
+    Texture bigTexture(polyWidth,polyHeight);
+
+    int X = 0;
+    int Y = 0;
+
+    while(Y < polyHeight){
+        for(int y = 0; y < smallTexture.getHeight(); y++){
+            while(X < polyWidth){
+                for(int x = 0; x < smallTexture.getWidth(); x++){
+                    uint32_t pixel = smallTexture.getPixel(x,y);
+                    if(Y + y < polyHeight && X + x < polyWidth){
+                        bigTexture.getData()[(Y + y) * polyWidth + (X + x)] = pixel;
+                    }
+                }
+
+                X += smallTexture.getWidth();
+            }
+
+            X = 0;
+        }
+        Y += smallTexture.getHeight();
+    }
+
+    sprites.push_back(Sprite(bigTexture,*key));
+
+    return;
+
+}
+
+Texture* SpriteManager::getSprite(Rasterizer* rasterizer,float minx,float maxx,float miny,float maxy,Polygon spritePoly,SpriteType type){
+    SpriteKey key(type);
+
+    for(Sprite& sprite: sprites){
+        if(*sprite.getKey() == key){
+            return sprite.getData();
+        }
+    }
+
+    loadSprite(rasterizer,&minx,&maxx,&miny,&maxy,&spritePoly,&key);
 
     for(Sprite& sprite: sprites){
         if(*sprite.getKey() == key){

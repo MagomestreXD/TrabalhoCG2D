@@ -22,6 +22,10 @@ class SpriteManager {
 
         Texture* getSprite(Rasterizer* rasterizer,Polygon poly,SpriteType type);
 
+        void loadSprite(Rasterizer* rasterizer,float* minx,float* maxx,float* miny,float* maxy,Polygon* spritePoly,SpriteKey* key);
+
+        Texture* getSprite(Rasterizer* rasterizer,float minx,float maxx,float miny,float maxy,Polygon spritePoly,SpriteType type);
+
         void emptySprites();
 
         float getScale(){

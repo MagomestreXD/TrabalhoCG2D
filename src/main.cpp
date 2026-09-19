@@ -40,7 +40,9 @@ int main(){
         make_unique<Entity>(poly,Vertex(40,40),0,SpriteType::inimigo)
     );
 
-    Game game(move(player),move(entities),Rasterizer(renderer,Height,Width,scale),SpriteManager(scale));   
+    Room room(Polygon(vector<Vertex>{Vertex(-640,-360),Vertex(640,-360),Vertex(640,360),Vertex(-640,360)}),Polygon(vector<Vertex>{Vertex(-16,-16),Vertex(16,-16),Vertex(16,16),Vertex(-16,16)}),SpriteType::room01);
+
+    Game game(move(player),move(entities),Rasterizer(renderer,Height,Width,scale),SpriteManager(scale),room);   
 
     SDL_Texture* texture = SDL_CreateTexture(
         renderer,

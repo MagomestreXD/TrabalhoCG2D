@@ -26,7 +26,9 @@ class Rasterizer {
 
         void clearFrameBuffer();
 
-        void setPixel(int x,int y, uint32_t color);
+        void setPixel(int x,int y, uint32_t color,bool screenCoordinates);
+
+        void setPixel(int x,uint32_t color,int yWidth);
 
         void drawLine(float x0,float y0,float x1,float y1,uint32_t color);
 

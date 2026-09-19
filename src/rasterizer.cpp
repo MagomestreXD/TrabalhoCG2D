@@ -22,7 +22,11 @@ void Rasterizer::clearFrameBuffer(){
     }
 }
 
-void Rasterizer::setPixel(int x,int y, uint32_t color){
+void Rasterizer::setPixel(int x,int y, uint32_t color,bool screenCoordinates){
+    if(screenCoordinates){
+        framebuffer[y * width + x] = color;   
+        return;
+    }
 
     int X = x - (camPos.getX() * zoom) + width/2;
     int Y = y - (camPos.getY() * zoom) + height/2;
@@ -32,6 +36,11 @@ void Rasterizer::setPixel(int x,int y, uint32_t color){
     }
 
     framebuffer[Y * width + X] = color;
+}
+
+void Rasterizer::setPixel(int x,uint32_t color,int yWidth){
+    framebuffer[yWidth + x]= color;
+    return;
 }
 
 void Rasterizer::drawLine(float x0,float y0,float x1,float y1,uint32_t color){
@@ -62,7 +71,7 @@ void Rasterizer::drawLine(float x0,float y0,float x1,float y1,uint32_t color){
 
         for(int x = (int) x0; x <= (int) x1;x++){
             
-            setPixel(x,y,color);
+            setPixel(x,y,color,false);
 
             if(D >= 0){
                 y += dir;
@@ -96,7 +105,7 @@ void Rasterizer::drawLine(float x0,float y0,float x1,float y1,uint32_t color){
 
         for(int y = (int) y0; y <= (int) y1;y++){
             
-            setPixel(x,y,color);
+            setPixel(x,y,color,false);
 
             if(D >= 0){
                 x += dir;
@@ -125,15 +134,15 @@ void Rasterizer::drawCircle(float x0,float y0,float radius,uint32_t color){
             D += 2*y + 1;
         }
 
-        setPixel(xc + x,yc + y,color);
-        setPixel(xc - x,yc + y,color);
-        setPixel(xc + x,yc - y,color);
-        setPixel(xc - x,yc - y,color);
+        setPixel(xc + x,yc + y,color,false);
+        setPixel(xc - x,yc + y,color,false);
+        setPixel(xc + x,yc - y,color,false);
+        setPixel(xc - x,yc - y,color,false);
 
-        setPixel(xc + y,yc + x,color);
-        setPixel(xc - y,yc + x,color);
-        setPixel(xc + y,yc - x,color);
-        setPixel(xc - y,yc - x,color);
+        setPixel(xc + y,yc + x,color,false);
+        setPixel(xc - y,yc + x,color,false);
+        setPixel(xc + y,yc - x,color,false);
+        setPixel(xc - y,yc - x,color,false);
 
         y++;
     }
@@ -158,10 +167,10 @@ void Rasterizer::drawElipse(float x0,float y0,float rA,float rB,uint32_t color){
 
         D += (2*y+1)*a*a;
 
-        setPixel(xc + x,yc + y,color);
-        setPixel(xc - x,yc + y,color);
-        setPixel(xc + x,yc - y,color);
-        setPixel(xc - x,yc - y,color);
+        setPixel(xc + x,yc + y,color,false);
+        setPixel(xc - x,yc + y,color,false);
+        setPixel(xc + x,yc - y,color,false);
+        setPixel(xc - x,yc - y,color,false);
 
         y++;
     }
@@ -176,10 +185,10 @@ void Rasterizer::drawElipse(float x0,float y0,float rA,float rB,uint32_t color){
 
         D += (-2*x+1)*b*b;
 
-        setPixel(xc + x,yc + y,color);
-        setPixel(xc - x,yc + y,color);
-        setPixel(xc + x,yc - y,color);
-        setPixel(xc - x,yc - y,color);
+        setPixel(xc + x,yc + y,color,false);
+        setPixel(xc - x,yc + y,color,false);
+        setPixel(xc + x,yc - y,color,false);
+        setPixel(xc - x,yc - y,color,false);
 
         x--;       
     }
@@ -212,7 +221,7 @@ void Rasterizer::floodFill(Vertex coord,uint32_t color){
             continue;
         }
 
-        setPixel(pixel.getX(),pixel.getY(),color);   
+        setPixel(pixel.getX(),pixel.getY(),color,true);   
 
         pixels.push(pixel.addCopy(Vertex(1,0)));
         pixels.push(pixel.addCopy(Vertex(-1,0)));
@@ -476,7 +485,7 @@ void Rasterizer::scanLine(Polygon poly){
 
                     uint32_t color = r << 24 | g << 16 | b << 8 | a;
 
-                    setPixel(x + minx,y + miny,color);
+                    setPixel(x + minx,y + miny,color,false);
 
                     pixelI++;
                 }
@@ -573,6 +582,7 @@ Texture Rasterizer::scanLineNearestNeighbor(Polygon poly,Texture texture){
     return sprite;
 }
 
+/*
 void Rasterizer::drawSprite(Polygon poly,Texture* sprite){
     vector<Vertex>* verteces = poly.getVerteces();
 
@@ -620,6 +630,84 @@ void Rasterizer::drawSprite(Polygon poly,Texture* sprite){
         Y += (*sprite).getHeight();
     }
 }
+*/
+
+void Rasterizer::drawSprite(Polygon poly, Texture* sprite){
+
+    vector<Vertex>* verteces = poly.getVerteces();
+
+    int maxy = (int)(*verteces)[0].getY();
+    int miny = (int)(*verteces)[0].getY();
+    int maxx = (int)(*verteces)[0].getX();
+    int minx = (int)(*verteces)[0].getX();
+
+    for(int i = 1; i < (*verteces).size(); i++){
+        if(maxy < (int)(*verteces)[i].getY()){
+            maxy = (int)(*verteces)[i].getY();
+        }
+
+        if(miny > (int)(*verteces)[i].getY()){
+            miny = (int)(*verteces)[i].getY();
+        }
+
+        if(maxx < (int)(*verteces)[i].getX()){
+            maxx = (int)(*verteces)[i].getX();
+        }
+
+        if(minx > (int)(*verteces)[i].getX()){
+            minx = (int)(*verteces)[i].getX();
+        }
+    }
+
+    int spriteWidth = sprite->getWidth();
+    int spriteHeight = sprite->getHeight();
+
+    int camX = (int)(camPos.getX() * zoom);
+    int camY = (int)(camPos.getY() * zoom);
+
+    int screenMinX = minx - camX + width / 2;
+    int screenMaxX = maxx - camX + width / 2;
+
+    int screenMinY = miny - camY + height / 2;
+    int screenMaxY = maxy - camY + height / 2;
+
+    int drawMinX = max(0, screenMinX);
+    int drawMaxX = min(width, screenMaxX);
+
+    int drawMinY = max(0, screenMinY);
+    int drawMaxY = min(height, screenMaxY);
+
+    if(drawMinX >= drawMaxX || drawMinY >= drawMaxY){
+        return;
+    }
+
+    int textureStartX = drawMinX - screenMinX;
+    int textureStartY = drawMinY - screenMinY;
+
+    int textureWidth = sprite->getWidth();
+
+    vector<uint32_t>& textureData = sprite->getData();
+
+    for(int y = 0; y < drawMaxY - drawMinY; y++){
+
+        int textureY = textureStartY + y;
+
+        int framebufferIndex = (drawMinY + y) * width;
+        int textureIndex = textureY * textureWidth + textureStartX;
+
+        for(int x = drawMinX; x < drawMaxX; x++){
+
+            uint32_t pixel = textureData[textureIndex];
+
+            if(pixel != 0){
+                setPixel(x, pixel, framebufferIndex);
+            }
+
+            textureIndex++;
+        }
+    }
+}
+
 
 void Rasterizer::setCamPos(Vertex pos){
     camPos = pos;

@@ -22,7 +22,6 @@ bool Game::checkCollision(Polygon polya, Polygon polyb, Vertex posa, Vertex posb
     float distSqrd = (xdistance * xdistance) + (ydistance * ydistance);
 
     if(distSqrd > minDistanceSqrd){
-        cout<<"evitei checkBox"<<endl;
         return false;
     }
     
@@ -76,7 +75,6 @@ bool Game::checkCollision(Polygon polya, Polygon polyb, Vertex posa, Vertex posb
     }
 
     if(maxxa < minxb || maxya < minyb || maxxb < minxa || maxyb < minya){
-        cout<<"checkbox negativo"<<endl;
         return false;
     }
 
@@ -84,7 +82,6 @@ bool Game::checkCollision(Polygon polya, Polygon polyb, Vertex posa, Vertex posb
         return false;
     }
 
-    cout<<"tocando"<<endl;
     return true;
 }
 
